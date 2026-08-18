@@ -1,112 +1,491 @@
-@import "./styles.css";
+/* ==============================================
+   Resume main.css — Document-style Resume
+   ============================================== */
 
-
-:root{
-    --h-title-color:#3948d2;
+/* ---------- Variables ---------- */
+:root {
+  --red:       #c0392b;
+  --blue:      #1a56db;
+  --entry-bg:  #efefef;
+  --text:      #111;
+  --muted:     #444;
+  --light:     #888;
+  --page-bg:   #ccc;
+  --paper:     #ffffff;
+  --page-max:  900px;
+  --pad-h:     52px;
+  --pad-v:     40px;
+  --topbar-h:  44px;
+  --font:      'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
 
-.header {
-    border-bottom: solid 2px var(--bs-blue);
-    z-index: 10000;
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--page-bg);
+  padding-top: var(--topbar-h);
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { font-weight: 700; }
+
+/* ==============================================
+   TOP BAR
+   ============================================== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  background: #1e2a3a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.topbar-name {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+.topbar-github { color: #a0b4cc; font-size: 1.1rem; transition: color .2s; }
+.topbar-github:hover { color: #fff; text-decoration: none; }
+.lang-toggle {
+  background: #2e4a6b;
+  color: #c8d8e8;
+  border: 1px solid #4a6a8a;
+  border-radius: 4px;
+  padding: 3px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.lang-toggle:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* ==============================================
+   PAPER
+   ============================================== */
+.resume-wrap {
+  max-width: var(--page-max);
+  margin: 24px auto 48px;
+  background: var(--paper);
+  padding: var(--pad-v) var(--pad-h);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
 }
 
-.bg-bottom {
-    background-color: var(--h-title-color);
+/* ==============================================
+   HEADER
+   ============================================== */
+#resume-header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #ddd;
 }
 
-.top-section {
-    position: relative;
-    padding: 10rem 0;
-    background-position: center;
-    background-size: cover;
-    height: 25rem;
+/* Top row: left (name + contact row) | right (avatar) */
+.rh-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.rh-left { flex: 1; min-width: 0; }
+.rh-name {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 10px;
 }
 
-.top-section h2 {
-    font-weight: 400;
+.rh-tagline {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.rh-tagline i { color: var(--red); font-size: 0.72rem; }
+
+/* Single contact row: phone · email · location · github */
+.rh-contact-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.rh-ci {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.rh-ci i { color: var(--blue); font-size: 0.72rem; }
+.rh-ci a { color: var(--muted); }
+.rh-ci a:hover { color: var(--blue); text-decoration: underline; }
+.rh-cdot {
+  color: #bbb;
+  padding: 0 7px;
+  font-size: 12px;
+  user-select: none;
 }
 
-.top-section .top-section-content {
-    position: relative;
-    z-index: 1;
+/* Avatar — right side */
+.rh-right { flex-shrink: 0; }
+.rh-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  display: block;
+}
+.rh-avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  border: 1.5px dashed #bbb;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 2rem;
 }
 
-.top-section:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+/* ==============================================
+   SECTION
+   ============================================== */
+.resume-section { margin-bottom: 18px; }
+
+.sec-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--red);
+  border-bottom: 1.5px solid var(--red);
+  padding-bottom: 3px;
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sec-icon { font-size: 0.85rem; opacity: 0.85; }
+
+/* ==============================================
+   SECTION BODY — MARKDOWN
+   ============================================== */
+.sec-body { color: var(--text); }
+
+.sec-body p { margin: 3px 0 7px; font-size: 13.5px; }
+
+/* ==============================================
+   ENTRY BAR (h3 → gray row)
+   ============================================== */
+.entry-bar {
+  background: var(--entry-bg);
+  padding: 5px 10px 5px 10px;
+  margin: 13px 0 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.eb-company {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #111;
+  white-space: nowrap;
+}
+.eb-sep { color: #999; font-weight: 300; font-size: 12px; }
+.eb-date {
+  color: var(--red);
+  font-weight: 700;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.eb-role {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.eb-dept2 {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+/* Right-aligned red link (last | segment) */
+.eb-link {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--red);
+  white-space: nowrap;
+}
+.eb-link a { color: var(--red); font-size: 11.5px; font-weight: 600; }
+.eb-link a:hover { text-decoration: underline; }
+
+/* ==============================================
+   PROJECT TITLE (h4 → blue bold)
+   ============================================== */
+.proj-title {
+  color: var(--blue);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 9px 0 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.proj-title a { color: var(--blue); }
+.proj-title a:hover { text-decoration: underline; }
+
+/* ==============================================
+   BULLET LISTS — 3 levels  ● ○ ■
+   ============================================== */
+.sec-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 6px;
+}
+/* Level 1 ● */
+.sec-body ul > li {
+  position: relative;
+  padding-left: 1.1em;
+  margin-bottom: 2.5px;
+  font-size: 13.5px;
+}
+.sec-body ul > li::before {
+  content: '●';
+  position: absolute;
+  left: 0; top: 0;
+  color: #222;
+  font-size: 0.47em;
+  line-height: 2.35;
+}
+/* Level 2 ○ */
+.sec-body ul ul {
+  margin: 2px 0 2px 1em;
+}
+.sec-body ul ul > li::before {
+  content: '○';
+  color: #555;
+}
+/* Level 3 ■ */
+.sec-body ul ul ul {
+  margin-left: 1em;
+}
+.sec-body ul ul ul > li::before {
+  content: '■';
+  font-size: 0.42em;
+  line-height: 2.6;
+  color: #777;
 }
 
-section header h2{
-    font-family: "Kanit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
-    color: var(--h-title-color);
-    font-size: 2.3rem;
-    line-height: 4rem;
+/* ==============================================
+   ORDERED LISTS
+   ============================================== */
+.sec-body ol {
+  padding-left: 1.5em;
+  margin: 4px 0 6px;
+}
+.sec-body ol > li { margin-bottom: 3px; font-size: 13.5px; }
+
+/* ==============================================
+   INLINE CODE
+   ============================================== */
+.sec-body code {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.82em;
+  background: #eef3ff;
+  color: var(--blue);
+  padding: 0.08em 0.35em;
+  border-radius: 3px;
 }
 
-section .main-body{
-    font-size: 1.3rem;
-    font-weight: 200;
-    line-height: 2.4rem;
+/* ==============================================
+   HR
+   ============================================== */
+.sec-body hr {
+  border: none;
+  border-top: 1px dashed #ddd;
+  margin: 10px 0;
 }
 
-
-.bg-gradient-primary-to-secondary-light {
-    background: linear-gradient(45deg, #fcfcfc, #ffffff) !important;
+/* ==============================================
+   BADGES / SHIELDS / IMG
+   ============================================== */
+.sec-body img {
+  vertical-align: middle;
+  margin: 0 3px 2px 0;
 }
 
-.bg-gradient-primary-to-secondary-gray {
-    background: linear-gradient(45deg, #f0f0f0, #f1f1f1) !important;
+/* ==============================================
+   DEERFLOW CARD — special repo highlight
+   ============================================== */
+.deerflow-card {
+  border: 1px solid #cddcf5;
+  border-left: 4px solid var(--blue);
+  background: #f5f8ff;
+  padding: 10px 14px;
+  margin: 8px 0 10px;
+  border-radius: 4px;
+}
+.deerflow-card-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.deerflow-card-title a { color: var(--blue); font-weight: 700; }
+.deerflow-card-title .dc-stars {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12.5px;
+}
+.deerflow-card-title .dc-badge {
+  margin-left: auto;
+  background: #1a7f37;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.deerflow-card-title .dc-badge::before {
+  content: '▲';
+  font-size: 9px;
+}
+.deerflow-card .sec-body ul { margin: 0; }
+
+/* ==============================================
+   BLOCKQUOTE — DeerFlow card style
+   ============================================== */
+.sec-body blockquote {
+  border: 1px solid #cddcf5;
+  border-left: 4px solid var(--blue);
+  background: #f5f8ff;
+  padding: 10px 14px;
+  margin: 8px 0 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+/* First paragraph = repo title line */
+.sec-body blockquote > p:first-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 7px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.sec-body blockquote > p:first-child a { color: var(--blue); font-weight: 700; }
+/* ⭐ stars text */
+.sec-body blockquote > p:first-child em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+/* #1 Repository badge — code tag */
+.sec-body blockquote > p:first-child code {
+  margin-left: auto;
+  background: #1a7f37;
+  color: #fff !important;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+  font-family: var(--font);
+  white-space: nowrap;
+}
+.sec-body blockquote p { margin: 2px 0 5px; font-size: 13px; }
+.sec-body blockquote strong { font-weight: 700; color: var(--text); }
+.sec-body blockquote a { color: var(--blue); }
+/* blockquote bullets same as main ● ○ ■ */
+.sec-body blockquote ul { list-style: none; padding: 0; margin: 4px 0 4px 0; }
+.sec-body blockquote ul > li {
+  position: relative;
+  padding-left: 1.1em;
+  margin-bottom: 2.5px;
+  font-size: 13px;
+}
+.sec-body blockquote ul > li::before {
+  content: '●';
+  position: absolute; left: 0; top: 0;
+  color: #222;
+  font-size: 0.47em;
+  line-height: 2.35;
+}
+.sec-body blockquote ul ul { margin: 2px 0 2px 1em; }
+.sec-body blockquote ul ul > li::before {
+  content: '○'; color: #555;
+}
+.sec-body blockquote ul ul ul { margin-left: 1em; }
+.sec-body blockquote ul ul ul > li::before {
+  content: '■'; color: #777; font-size: 0.42em; line-height: 2.6;
 }
 
-
-
-.on-top {
-    position: relative;
-    z-index: 10000;
+/* ==============================================
+   FOOTER
+   ============================================== */
+.resume-footer {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 11.5px;
+  color: #aaa;
 }
 
-.top-bg {
-    background-position: center;
-    background-size: fill;
-    width: 100%;
-    height: 100%;
+.loading-hint {
+  color: #aaa;
+  padding: 20px;
+  font-size: 13px;
 }
 
-.top-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+/* ==============================================
+   RESPONSIVE
+   ============================================== */
+@media (max-width: 940px) {
+  :root { --pad-h: 28px; --pad-v: 28px; }
+  .resume-wrap { margin: 10px auto 32px; }
 }
-
-
-#avatar {
-    position: relative;
-    height: 0;
-    top:min(-65px,max(-100px,calc(-1*100vw/12)));
-    max-width: 55em;
-    margin: 0 1.5rem 0 0;
-    float: right;
-    z-index: 9000;
+@media (max-width: 600px) {
+  :root { --pad-h: 14px; --pad-v: 18px; }
+  .rh-top { align-items: flex-start; }
+  .rh-contact-row { flex-direction: column; gap: 4px; }
+  .rh-cdot { display: none; }
+  .rh-avatar, .rh-avatar-placeholder { width: 60px; height: 60px; font-size: 1.5rem; }
+  .eb-link { margin-left: 0; width: 100%; }
+  .topbar { padding: 0 14px; }
 }
-
-#avatar img {
-    height: max(130px,min(200px,calc(100vw/6)));
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-}
-
-@media screen and (max-width: 991px) {
-    #avatar {
-        margin: 0;
-    }
-}
-
-

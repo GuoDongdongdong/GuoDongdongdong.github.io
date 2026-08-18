@@ -1,5 +1,47 @@
-title: xuguodong's Homepage
-page-top-title: xuguodong
-top-section-bg-text: AI-powered. Human-driven.
-home-subtitle: xuguodong&ensp
-copyright-text: '&copy; xuguodong 2026. All Rights Reserved.'
+# ── 基础配置 ──────────────────────────────
+default_lang: zh
+page_title_zh: 徐国栋 · 个人简历
+page_title_en: Xu Guodong · Resume
+
+# ── 姓名 ──────────────────────────────────
+name_zh: 徐 国 栋
+name_en: Xu Guodong
+
+# ── 头像（右上角，留空则显示占位框）──────────
+avatar_url: ""
+
+# ── 联系行（电话 | 邮箱 | 城市 | GitHub）─────
+phone: "+86 153-8949-0059"
+email: a645219093@qq.com
+location: "北京"
+github_url: https://github.com/GuoDongdongdong
+github_username: "github.com/GuoDongdongdong"
+
+# ── 联系行下方简介行 ────────────────────────
+tagline_zh: "西北大学 软件工程（硕士）| 本科 西北大学 计算机科学与技术"
+tagline_en: "M.E. Software Engineering @ Northwest University | B.E. Computer Science @ Northwest University"
+
+# ── Section 标题（中文）──────────────────
+section_education_zh: "教育背景"
+section_experience_zh: "工作经历"
+section_projects_zh: "个人项目"
+section_skills_zh: "专业技能"
+section_awards_zh: "荣誉奖项 & 论文发表"
+
+# ── Section 标题（英文）──────────────────
+section_education_en: "Education"
+section_experience_en: "Work Experience"
+section_projects_en: "Projects"
+section_skills_en: "Skills"
+section_awards_en: "Awards & Publications"
+
+# ── Section 顺序 ──────────────────────────
+sections:
+  - experience
+  - projects
+  - skills
+  - awards
+
+# ── 版权 ─────────────────────────────────
+copyright_zh: "© 徐国栋 · All Rights Reserved"
+copyright_en: "© Xu Guodong · All Rights Reserved"
