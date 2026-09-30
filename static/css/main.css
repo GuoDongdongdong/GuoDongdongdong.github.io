@@ -6,6 +6,7 @@
 :root {
   --red:       #c0392b;
   --blue:      #1a56db;
+  --blue-dark: #0d3b8f;
   --entry-bg:  #efefef;
   --text:      #111;
   --muted:     #444;
@@ -55,8 +56,6 @@ strong { font-weight: 700; }
   font-weight: 600;
 }
 .topbar-actions { display: flex; align-items: center; gap: 12px; }
-.topbar-github { color: #a0b4cc; font-size: 1.1rem; transition: color .2s; }
-.topbar-github:hover { color: #fff; text-decoration: none; }
 .lang-toggle {
   background: #2e4a6b;
   color: #c8d8e8;
@@ -70,6 +69,25 @@ strong { font-weight: 700; }
   transition: background .2s, color .2s;
 }
 .lang-toggle:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* 导出按钮 */
+.export-btn {
+  background: #2e4a6b;
+  color: #c8d8e8;
+  border: 1px solid #4a6a8a;
+  border-radius: 4px;
+  padding: 3px 11px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background .2s, color .2s;
+}
+.export-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.export-btn:disabled { opacity: .55; cursor: default; }
+.export-btn i { font-size: 0.82rem; }
 
 /* ==============================================
    PAPER
@@ -91,72 +109,70 @@ strong { font-weight: 700; }
   border-bottom: 2px solid #ddd;
 }
 
-/* Top row: left (name + contact row) | right (avatar) */
+/* Top row: left (name + contact + summary) | right (avatar)
+   文字块与头像等高并底对齐：姓名/联系的最下一行与照片下边缘齐平 */
 .rh-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+  align-items: flex-end;
+  gap: 18px;
 }
-.rh-left { flex: 1; min-width: 0; }
+.rh-left { flex: 1; min-width: 0; padding-top: 62px; }
+.rh-right { flex-shrink: 0; }
+
 .rh-name {
   font-size: 2rem;
   font-weight: 900;
   letter-spacing: -0.01em;
   color: var(--text);
-  line-height: 1.1;
-  margin-bottom: 10px;
+  line-height: 1.15;
+  margin-bottom: 18px;
 }
 
-.rh-tagline {
-  margin-top: 6px;
+/* 个人信息摘要 */
+.rh-summary {
+  margin-top: 8px;
   font-size: 12.5px;
+  line-height: 1.75;
   color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
-.rh-tagline i { color: var(--red); font-size: 0.72rem; }
 
-/* Single contact row: phone · email · location · github */
+/* 联系方式：同一行排列（放不下才换行） */
 .rh-contact-row {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 4px 0;
-  font-size: 12.5px;
+  align-items: center;
+  column-gap: 20px;
+  row-gap: 4px;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--muted);
 }
 .rh-ci {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
+  min-width: 0;
 }
-.rh-ci i { color: var(--blue); font-size: 0.72rem; }
+.rh-ci i { color: var(--blue); font-size: 0.82rem; }
 .rh-ci a { color: var(--muted); }
 .rh-ci a:hover { color: var(--blue); text-decoration: underline; }
-.rh-cdot {
-  color: #bbb;
-  padding: 0 7px;
-  font-size: 12px;
-  user-select: none;
-}
+/* 每项已独立成行，行内分隔点不再需要 */
+.rh-cdot { display: none; }
 
-/* Avatar — right side */
-.rh-right { flex-shrink: 0; }
+/* Avatar — right side, 3:4 竖版胸像（蓝底证件照原样，直角无边） */
 .rh-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 1px solid #ddd;
+  /* avatar.jpg 为 216x288（3:4 胸像），height:auto 跟着宽度等比缩放。
+     只改下面的 width 就能缩放。注意：不要加 object-fit，避免比例不符被裁。 */
+  width: 88px;
+  height: auto;
+  border-radius: 0;
   display: block;
 }
 .rh-avatar-placeholder {
-  width: 80px;
-  height: 80px;
-  border-radius: 6px;
+  width: 88px;
+  height: 117px;
+  border-radius: 0;
   border: 1.5px dashed #bbb;
   background: #f5f5f5;
   display: flex;
@@ -189,7 +205,7 @@ strong { font-weight: 700; }
    ============================================== */
 .sec-body { color: var(--text); }
 
-.sec-body p { margin: 3px 0 7px; font-size: 13.5px; }
+.sec-body p { margin: 3px 0 7px; font-size: 13.5px; line-height: 1.7; }
 
 /* ==============================================
    ENTRY BAR (h3 → gray row)
@@ -199,11 +215,20 @@ strong { font-weight: 700; }
   padding: 5px 10px 5px 10px;
   margin: 13px 0 6px;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
   gap: 3px 8px;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+/* 无底色版（教育背景用）——去掉灰底、内边距与分隔线，纯文字排版 */
+.entry-bar--plain {
+  background: transparent;
+  padding: 0;
+  border: none;
+  /* 两条学历之间不做任何分隔，仅靠行距区隔 */
+  margin: 7px 0 10px;
 }
 .eb-company {
   font-weight: 800;
@@ -241,20 +266,23 @@ strong { font-weight: 700; }
 .eb-link a:hover { text-decoration: underline; }
 
 /* ==============================================
-   PROJECT TITLE (h4 → blue bold)
+   PROJECT TITLE (h4 → 深蓝加粗，左侧竖条强调)
    ============================================== */
 .proj-title {
-  color: var(--blue);
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin: 9px 0 3px;
+  color: var(--blue-dark);
+  font-size: 0.98rem;
+  font-weight: 800;
+  margin: 14px 0 5px;
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  line-height: 1.4;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  border-left: 3px solid var(--blue-dark);
+  padding-left: 9px;
 }
-.proj-title a { color: var(--blue); }
+.proj-title a { color: var(--blue-dark); }
 .proj-title a:hover { text-decoration: underline; }
 
 /* ==============================================
@@ -269,8 +297,9 @@ strong { font-weight: 700; }
 .sec-body ul > li {
   position: relative;
   padding-left: 1.1em;
-  margin-bottom: 2.5px;
+  margin-bottom: 4px;
   font-size: 13.5px;
+  line-height: 1.7;
 }
 .sec-body ul > li::before {
   content: '●';
@@ -278,7 +307,16 @@ strong { font-weight: 700; }
   left: 0; top: 0;
   color: #222;
   font-size: 0.47em;
-  line-height: 2.35;
+  line-height: 2.05;
+}
+/* 荣誉奖项：名称 + 年份两列，使各条年份左边缘纵向对齐。
+   .is-emph 是论文条目（contains <em>），单独成列表，排除在网格外，保持一行。
+   必须限定 .sec-body--awards，否则会误伤工作经历/技能的列表。 */
+.sec-body--awards > ul > li:not(.is-emph) {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 16px;
+  align-items: baseline;
 }
 /* Level 2 ○ */
 .sec-body ul ul {
@@ -295,7 +333,7 @@ strong { font-weight: 700; }
 .sec-body ul ul ul > li::before {
   content: '■';
   font-size: 0.42em;
-  line-height: 2.6;
+  line-height: 2.3;
   color: #777;
 }
 
@@ -444,7 +482,7 @@ strong { font-weight: 700; }
   position: absolute; left: 0; top: 0;
   color: #222;
   font-size: 0.47em;
-  line-height: 2.35;
+  line-height: 2.05;
 }
 .sec-body blockquote ul ul { margin: 2px 0 2px 1em; }
 .sec-body blockquote ul ul > li::before {
@@ -452,19 +490,7 @@ strong { font-weight: 700; }
 }
 .sec-body blockquote ul ul ul { margin-left: 1em; }
 .sec-body blockquote ul ul ul > li::before {
-  content: '■'; color: #777; font-size: 0.42em; line-height: 2.6;
-}
-
-/* ==============================================
-   FOOTER
-   ============================================== */
-.resume-footer {
-  margin-top: 20px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-  text-align: center;
-  font-size: 11.5px;
-  color: #aaa;
+  content: '■'; color: #777; font-size: 0.42em; line-height: 2.3;
 }
 
 .loading-hint {
@@ -480,12 +506,50 @@ strong { font-weight: 700; }
   :root { --pad-h: 28px; --pad-v: 28px; }
   .resume-wrap { margin: 10px auto 32px; }
 }
+/* 窄屏：联系方式换行显示，不做特殊处理（flex-wrap 已自适应） */
 @media (max-width: 600px) {
   :root { --pad-h: 14px; --pad-v: 18px; }
   .rh-top { align-items: flex-start; }
-  .rh-contact-row { flex-direction: column; gap: 4px; }
-  .rh-cdot { display: none; }
-  .rh-avatar, .rh-avatar-placeholder { width: 60px; height: 60px; font-size: 1.5rem; }
+  .rh-left { padding-top: 0; }
+  .rh-contact-row { font-size: 12.5px; column-gap: 14px; row-gap: 2px; }
+  /* 手机端只改宽度，height 保持 auto，照片依旧不被裁切 */
+  .rh-avatar { width: 84px; height: auto; border-radius: 0; }
+  .rh-avatar-placeholder { width: 84px; height: 112px; font-size: 1.5rem; border-radius: 0; }
+  .rh-summary { font-size: 12px; line-height: 1.7; }
   .eb-link { margin-left: 0; width: 100%; }
   .topbar { padding: 0 14px; }
+  .topbar-name { max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+/* ==============================================
+   PRINT / 导出 PDF
+   ============================================== */
+@media print {
+  @page { size: A4; margin: 12mm 12mm; }
+
+  html, body {
+    background: #fff !important;
+    font-size: 12px;
+  }
+  /* 顶栏只在屏幕上出现 */
+  .topbar { display: none !important; }
+
+  .resume-wrap {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    background: #fff;
+  }
+
+  /* 保留深蓝项目标题等底色与颜色 */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 避免条目被拆到两页 */
+  .entry-bar, .proj-title, .sec-title { break-inside: avoid; page-break-inside: avoid; }
+  .resume-section { break-inside: auto; }
+  a { text-decoration: none; color: inherit; }
 }

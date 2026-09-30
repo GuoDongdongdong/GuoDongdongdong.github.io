@@ -59,10 +59,14 @@ function parseEntryBar(innerHTML) {
 }
 
 /* ---------- Post-process: h3 → entry-bar, h4 → proj-title ---------- */
-function postProcess(container) {
+function postProcess(container, key) {
+  // 注意：此处 container 尚未插入 DOM，closest() 查不到父级 section，
+  // 因此必须用 section key 判断，不能靠 closest。
+  const isEducation = key === 'education';
+
   container.querySelectorAll('h3').forEach(h3 => {
     const div = document.createElement('div');
-    div.className = 'entry-bar';
+    div.className = isEducation ? 'entry-bar entry-bar--plain' : 'entry-bar';
     div.innerHTML = parseEntryBar(h3.innerHTML);
     h3.replaceWith(div);
   });
@@ -78,28 +82,27 @@ function postProcess(container) {
 /* ---------- Build header ---------- */
 function buildHeader(cfg, lang) {
   const name       = cfg[`name_${lang}`]    || cfg['name']    || 'Your Name';
-  const github     = cfg['github_url']       || '#';
-  const ghUsername = cfg['github_username']  || '';
   const email      = cfg['email']            || '';
   const phone      = cfg['phone']            || '';
   const location   = cfg['location']         || '';
   const avatarUrl  = cfg['avatar_url']       || '';
-  const tagline    = cfg[`tagline_${lang}`]  || '';
+  const summary    = cfg[`summary_${lang}`]  || cfg['summary'] || '';
 
   const el = document.getElementById('resume-header');
   if (!el) return;
 
-  // Avatar: real image or placeholder box
+  // Avatar: real image or placeholder box.
+  // 原图未裁切，宽度由 .rh-avatar 控制，height:auto 保持 2:3 原始比例。
+  // 这里不写 width/height 属性，避免与 CSS 冲突而拉伸照片。
   const avatarHtml = avatarUrl
     ? `<img class="rh-avatar" src="${avatarUrl}" alt="avatar" />`
     : `<div class="rh-avatar rh-avatar-placeholder"><i class="bi bi-person-fill"></i></div>`;
 
-  // Contact row items: phone | email | location | github
+  // Contact row items: phone | email | location
   const items = [];
   if (phone)      items.push(`<span class="rh-ci"><i class="bi bi-telephone-fill"></i>${phone}</span>`);
   if (email)      items.push(`<span class="rh-ci"><i class="bi bi-envelope-fill"></i><a href="mailto:${email}">${email}</a></span>`);
   if (location)   items.push(`<span class="rh-ci"><i class="bi bi-geo-alt-fill"></i>${location}</span>`);
-  if (ghUsername) items.push(`<span class="rh-ci"><i class="bi bi-github"></i><a href="${github}" target="_blank">${ghUsername}</a></span>`);
   const contactRow = items.join('<span class="rh-cdot">·</span>');
 
   el.innerHTML = `
@@ -107,7 +110,7 @@ function buildHeader(cfg, lang) {
       <div class="rh-left">
         <h1 class="rh-name">${name}</h1>
         <div class="rh-contact-row">${contactRow}</div>
-        ${tagline ? `<div class="rh-tagline"><i class="bi bi-mortarboard-fill"></i>${tagline}</div>` : ''}
+        ${summary ? `<div class="rh-summary">${summary}</div>` : ''}
       </div>
       <div class="rh-right">${avatarHtml}</div>
     </div>
@@ -116,11 +119,20 @@ function buildHeader(cfg, lang) {
   // Topbar
   const tbName = document.getElementById('topbar-name');
   if (tbName) tbName.textContent = name;
-  const tbGh = document.getElementById('topbar-github');
-  if (tbGh) tbGh.href = github;
 
   // Page title
   document.title = cfg[`page_title_${lang}`] || cfg['page_title'] || name;
+}
+
+/* ---------- 标记「强调条目」 ----------
+   奖励/论文区块里，对含 <em>（斜体）的条目加 .is-emph 标记。
+   用途：把「论文条目」从奖项的年份对齐网格中排除出去。
+   注意：不能图省事用 li:not(:has(em)) 当选择器 —— 那会命中全文档所有
+   列表项，把工作经历/技能的要点也套上两列网格。 */
+function markEmphasisItems(body) {
+  body.querySelectorAll(':scope > ul > li').forEach(li => {
+    if (li.querySelector('em')) li.classList.add('is-emph');
+  });
 }
 
 /* ---------- Build section ---------- */
@@ -137,9 +149,11 @@ function buildSection(key, html, cfg, lang) {
   heading.innerHTML = `<i class="bi ${icon} sec-icon"></i>${label}`;
 
   const body = document.createElement('div');
-  body.className = 'sec-body';
+  // 带上 section key，便于按区块写样式（如 .sec-body--awards）
+  body.className = `sec-body sec-body--${key}`;
   body.innerHTML = html;
-  postProcess(body);
+  markEmphasisItems(body);
+  postProcess(body, key);
 
   sec.appendChild(heading);
   sec.appendChild(body);
@@ -175,10 +189,66 @@ async function loadSections(lang) {
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
 }
 
-/* ---------- Footer ---------- */
-function buildFooter(cfg, lang) {
-  const ft = document.getElementById('footer-text');
-  if (ft) ft.innerHTML = cfg[`copyright_${lang}`] || cfg['copyright'] || '';
+/* ---------- Export: PDF / PNG ---------- */
+function exportFileName(ext) {
+  const name = (CONFIG[`name_${CURRENT_LANG}`] || CONFIG['name'] || 'resume').replace(/\s+/g, '');
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${name}_简历_${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}.${ext}`;
+}
+
+/* PDF：走浏览器原生打印，在「另存为 PDF」里输出的矢量文字可选中、可搜索。
+   版面由 main.css 的 @media print 控制（隐藏顶栏、去阴影、A4 边距）。 */
+function exportPdf() {
+  window.print();
+}
+
+/* PNG：用 html2canvas 把简历整块截成长图 */
+async function exportPng(btn) {
+  if (!window.html2canvas) {
+    alert('图片导出库未加载，请检查 static/js/html2canvas.min.js');
+    return;
+  }
+  const target = document.getElementById('resume-wrap');
+  if (!target) return;
+
+  const label = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.textContent = '生成中…'; }
+
+  try {
+    const canvas = await window.html2canvas(target, {
+      backgroundColor: '#ffffff',
+      scale: 2,                 // 2 倍图，文字更清晰
+      useCORS: true,
+      logging: false,
+      windowWidth: target.scrollWidth,
+      windowHeight: target.scrollHeight,
+    });
+
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    if (!blob) throw new Error('canvas.toBlob 返回空');
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = exportFileName('png');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {
+    console.error('[resume] PNG 导出失败:', e);
+    alert('图片导出失败：' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = label; }
+  }
+}
+
+function initExport() {
+  const pdf = document.getElementById('btnPdf');
+  const png = document.getElementById('btnPng');
+  if (pdf) pdf.addEventListener('click', exportPdf);
+  if (png) png.addEventListener('click', () => exportPng(png));
 }
 
 /* ---------- Language toggle ---------- */
@@ -190,7 +260,6 @@ function initLangToggle() {
     btn.textContent = CURRENT_LANG === 'zh' ? 'EN' : '中文';
     document.documentElement.lang = CURRENT_LANG;
     buildHeader(CONFIG, CURRENT_LANG);
-    buildFooter(CONFIG, CURRENT_LANG);
     loadSections(CURRENT_LANG);
   });
 }
@@ -198,6 +267,7 @@ function initLangToggle() {
 /* ---------- Boot ---------- */
 window.addEventListener('DOMContentLoaded', async () => {
   initLangToggle();
+  initExport();
   try {
     const raw = await fetchText(CONTENT_DIR + CONFIG_FILE);
     CONFIG = jsyaml.load(raw);
@@ -206,7 +276,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (btn) btn.textContent = CURRENT_LANG === 'zh' ? 'EN' : '中文';
     document.documentElement.lang = CURRENT_LANG;
     buildHeader(CONFIG, CURRENT_LANG);
-    buildFooter(CONFIG, CURRENT_LANG);
     await loadSections(CURRENT_LANG);
   } catch(e) {
     console.error('[resume] Boot error:', e);

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="static/css/main.css" />
   <script src="static/js/marked.min.js"></script>
   <script src="static/js/js-yaml.min.js"></script>
+  <script src="static/js/html2canvas.min.js"></script>
   <script src="static/js/scripts.js" defer></script>
 </head>
 <body>
@@ -18,18 +19,20 @@
   <div class="topbar" id="topbar">
     <span class="topbar-name" id="topbar-name"></span>
     <div class="topbar-actions">
-      <a class="topbar-github" id="topbar-github" href="#" target="_blank">
-        <i class="bi bi-github"></i>
-      </a>
+      <button class="export-btn" id="btnPdf" title="导出 PDF（在打印对话框中选择“另存为 PDF”）">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+      </button>
+      <button class="export-btn" id="btnPng" title="导出 PNG 长图">
+        <i class="bi bi-image"></i> 图片
+      </button>
       <button class="lang-toggle" id="langToggle" title="切换语言 / Switch Language">EN</button>
     </div>
   </div>
 
   <!-- ===== Resume Paper ===== -->
-  <div class="resume-wrap">
+  <div class="resume-wrap" id="resume-wrap">
     <header id="resume-header"></header>
     <main   id="resume-main"></main>
-    <footer class="resume-footer"><span id="footer-text"></span></footer>
   </div>
 
 </body>

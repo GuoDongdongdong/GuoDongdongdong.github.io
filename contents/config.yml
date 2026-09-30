@@ -7,41 +7,37 @@ page_title_en: Xu Guodong · Resume
 name_zh: 徐 国 栋
 name_en: Xu Guodong
 
-# ── 头像（右上角，留空则显示占位框）──────────
-avatar_url: ""
+# ── 头像（左上角 3:4 竖版胸像，留空则显示占位框）──
+# avatar.jpg = 216x288（由 avatar-original.jpg 裁出的 3:4 头肩取景，未拉伸）
+# 显示大小请在 main.css 的 .rh-avatar 里改 width。
+avatar_url: "static/assets/img/avatar.jpg"
 
-# ── 联系行（电话 | 邮箱 | 城市 | GitHub）─────
-phone: "+86 153-8949-0059"
-email: a645219093@qq.com
+# ── 联系行（电话 | 邮箱 | 城市）─────────────
+phone: "15389490059"
+email: xuguodong0059@gmail.com
 location: "北京"
-github_url: https://github.com/GuoDongdongdong
-github_username: "github.com/GuoDongdongdong"
 
-# ── 联系行下方简介行 ────────────────────────
-tagline_zh: "西北大学 软件工程（硕士）| 本科 西北大学 计算机科学与技术"
-tagline_en: "M.E. Software Engineering @ Northwest University | B.E. Computer Science @ Northwest University"
+# ── 姓名下方简介行（暂不使用，留空则整块不渲染）──
+# 需要时取消注释并改写内容即可；想换行可用 <br>
+# summary_zh: "大模型应用与 Agent 架构方向，广告商业化后端 + AI 工程经验。主导磁力青松 Agent Harness 架构升级（Workflow → 动态工具调度），新增业务能力研发周期缩短约 50%。"
+# summary_en: "Focus on LLM applications and Agent architecture, with backend and AI engineering experience in ads monetization. Led the Cili Qingsong Agent Harness migration (Workflow → dynamic tool dispatch), cutting the cycle to add new capabilities by ~50%."
 
 # ── Section 标题（中文）──────────────────
 section_education_zh: "教育背景"
 section_experience_zh: "工作经历"
-section_projects_zh: "个人项目"
 section_skills_zh: "专业技能"
-section_awards_zh: "荣誉奖项 & 论文发表"
+section_awards_zh: "论文发表 & 荣誉奖项"
 
 # ── Section 标题（英文）──────────────────
 section_education_en: "Education"
 section_experience_en: "Work Experience"
-section_projects_en: "Projects"
 section_skills_en: "Skills"
-section_awards_en: "Awards & Publications"
+section_awards_en: "Publications & Awards"
 
 # ── Section 顺序 ──────────────────────────
+# projects 已并入 experience，故不再单独成节
 sections:
+  - education
   - experience
-  - projects
   - skills
   - awards
-
-# ── 版权 ─────────────────────────────────
-copyright_zh: "© 徐国栋 · All Rights Reserved"
-copyright_en: "© Xu Guodong · All Rights Reserved"
