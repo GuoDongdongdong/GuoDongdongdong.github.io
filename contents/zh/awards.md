@@ -1,6 +1,6 @@
 **论文发表**
 
-- ***MPformer: A Transformer-based Model for Earthen Ruins Climate Prediction*** **SCI 一区期刊** | **第一作者**
+- *MPformer: A Transformer-based Model for Earthen Ruins Climate Prediction* SCI 一区期刊 | 第一作者
 
 **荣誉奖项**
 

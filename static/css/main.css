@@ -15,7 +15,9 @@
   --paper:     #ffffff;
   --page-max:  900px;
   --pad-h:     52px;
-  --pad-v:     40px;
+  --pad-v:     20px;
+  /* 纸张顶部内边距单独控制（头像上方的留白就是它） */
+  --pad-v-top: 12px;
   --topbar-h:  44px;
   --font:      'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
@@ -94,9 +96,13 @@ strong { font-weight: 700; }
    ============================================== */
 .resume-wrap {
   max-width: var(--page-max);
-  margin: 24px auto 48px;
+  /* 纸张上下外边距（与内边距共同构成页面首尾留白） */
+  margin: 12px auto 24px;
   background: var(--paper);
   padding: var(--pad-v) var(--pad-h);
+  /* 顶部内边距单独控制：头像上沿即内容起始线，这里的空白直接显在照片上方。
+     调小 --pad-v-top 即可减少照片上方留白。 */
+  padding-top: var(--pad-v-top);
   box-shadow: 0 4px 32px rgba(0,0,0,0.2);
 }
 
@@ -503,12 +509,12 @@ strong { font-weight: 700; }
    RESPONSIVE
    ============================================== */
 @media (max-width: 940px) {
-  :root { --pad-h: 28px; --pad-v: 28px; }
-  .resume-wrap { margin: 10px auto 32px; }
+  :root { --pad-h: 28px; --pad-v: 14px; --pad-v-top: 8px; }
+  .resume-wrap { margin: 10px auto 16px; }
 }
 /* 窄屏：联系方式换行显示，不做特殊处理（flex-wrap 已自适应） */
 @media (max-width: 600px) {
-  :root { --pad-h: 14px; --pad-v: 18px; }
+  :root { --pad-h: 14px; --pad-v: 9px; --pad-v-top: 6px; }
   .rh-top { align-items: flex-start; }
   .rh-left { padding-top: 0; }
   .rh-contact-row { font-size: 12.5px; column-gap: 14px; row-gap: 2px; }

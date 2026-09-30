@@ -1,6 +1,6 @@
 **Publications**
 
-- ***MPformer: A Transformer-based Model for Earthen Ruins Climate Prediction*** **SCI Q1 Journal** | **First Author**
+- *MPformer: A Transformer-based Model for Earthen Ruins Climate Prediction* SCI Q1 Journal | First Author
 
 **Awards & Honors**
 

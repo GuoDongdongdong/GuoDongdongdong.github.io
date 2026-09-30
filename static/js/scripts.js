@@ -125,9 +125,15 @@ function buildHeader(cfg, lang) {
 }
 
 /* ---------- 标记「强调条目」 ----------
-   奖励/论文区块里，对含 <em>（斜体）的条目加 .is-emph 标记。
-   用途：把「论文条目」从奖项的年份对齐网格中排除出去。
-   注意：不能图省事用 li:not(:has(em)) 当选择器 —— 那会命中全文档所有
+   对含 <em>（斜体）的条目加 .is-emph，用于把「论文条目」从奖项的
+   年份对齐网格（.sec-body--awards > ul > li:not(.is-emph)）中排除。
+
+   ⚠️ 依赖：contents/{zh,en}/awards.md 里论文那一条必须保留 *斜体* 标记
+   （markdown 单星号），否则这里判不出来，论文会被当成奖项套上两列网格。
+   论文的「SCI 一区 | 第一作者」为与奖项保持一致的正文色而不加粗 —— 
+   本函数只依赖斜体，与字重无关。
+
+   注意：不要改用 li:not(:has(em)) 当选择器 —— 那会命中全文档所有
    列表项，把工作经历/技能的要点也套上两列网格。 */
 function markEmphasisItems(body) {
   body.querySelectorAll(':scope > ul > li').forEach(li => {
