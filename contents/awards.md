@@ -1,2 +1,0 @@
-- 校级一等奖学金, XX University, 2022.
-- Outstanding Graduation Thesis, XX University, 2023.

@@ -1,2 +1,0 @@
-- **Chinese** — Native
-- **English** — Professional

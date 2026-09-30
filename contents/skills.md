@@ -1,6 +1,0 @@
-- Python / C++ / Java
-- PyTorch / TensorFlow
-- Distributed Systems
-- SQL / NoSQL
-- Git / Linux / Docker
-- A/B Testing
