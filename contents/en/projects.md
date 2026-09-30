@@ -1,23 +1,32 @@
-#### Thumbnail AI · Mountex
+#### Cili Qingsong Agent — Workflow to Agent Harness Architecture Migration
 
-- **Background:** AI cover image generation tool for multiple platforms built with MkSaaS & Next.js ([thumbnail-ai.com](https://thumbnail-ai.com)), targeting creators on YouTube, Instagram, Facebook, X, LinkedIn and TikTok; supports platform-specific sizes, style references and subject upload, generating professional covers in 3 steps to boost click-through rates.
-- **Product & pipeline:** Frontend: Next.js + responsive multi-platform adaptation, platform-preset sizes, local/URL subject upload, style reference images; AI pipeline: subject + style image → prompt assembly (platform context + style keywords) → image generation API → multi-size preview & download; free quota + paid subscription, HD export & batch generation for paid users.
-- **Metrics:** 2000+ registered users, 200+ paid users; 500+ MAU, 1500+ covers generated monthly; paid conversion ~38%; avg upload-to-output < 2 min.
-- **My role:** Project owner, 0-to-1 frontend engineering (Next.js, payment & subscription flow, multi-platform size/style config) + AI cover generation pipeline (prompt engineering, multi-size batch generation, cost optimization & UX).
-
-#### Krene-Art
-
-- **Background:** AI creation platform for game/anime character designers ([krene.com](https://krene.com)); Agent completes intent parsing, reference image retrieval, visual feature extraction and Prompt generation, outputting character cards with design notes (core setting, concept integration, character illustration), shortening the design cycle from concept to finished art.
-- **ReAct Workflow:**
-  - search: generate search keywords from intent → scrape Bing image search for HD links → LLM voting/scoring on game character dimensions (styling, color, temperament), aggregating ~300 references per run
-  - design: GPT-4o Vision extracts 5-dimensional visual features from references → assembled into structured Prompt with user settings → NovelAI nai-diffusion-3 generates 10 character images
-  - evaluate: designer scores on preset dimensions; low score triggers ReAct to redo design (adjust Prompt or reference set) until passing → output structured character card
-- **Metrics:** 1200+ users, 150+ paid; 400+ character cards generated monthly; paid conversion ~42%; avg concept-to-card < 6–8 min.
-- **My role:** Project owner, 0-to-1 frontend + AI character design ReAct Workflow (intent parsing, search/design/evaluate orchestration, Vision feature extraction & NovelAI integration, structured card output & display).
+- **Background:** Cili Qingsong is Kuaishou's AI assistant for the Magnetic Engine advertising platform, providing advertisers with delivery consulting, performance diagnostics, and ad operation capabilities. The original system used a **fixed Workflow pipeline** — node order was hardcoded (intent recognition → retrieval → LLM → response), requiring modifications to the main flow for each new capability; cross-cutting concerns like context management, tool invocation, and memory injection were scattered across individual nodes. **Goal:** Migrate the platform AI from a fixed Workflow to an **Agent Harness** architecture with dynamic tool dispatch and unified context management, while exposing capabilities via a standard RPC interface.
+- **Core migration: Workflow → Agent Harness**
+  - **Original Workflow mode:** Coordinator → Planner → specialized nodes (knowledge retrieval / performance diagnostics / bid adjustment / audit…) → response; fixed node order, intent routing hardcoded in the main flow, adding new capabilities required changing the DAG
+  - **Agent Harness mode:** A **Lead Agent (LLM) drives all decisions** — system prompt dynamically injects the available tool list (knowledge Q&A / performance diagnostics / traffic prediction / bid suggestions / audit tracking, etc.); the Agent autonomously selects the tool chain based on user intent and dispatches via `ExecuteAction` to the corresponding sub-agent, with results fed back to the Lead Agent for synthesis
+  - **Middleware Chain decoupling:** Extracted cross-cutting logic (context loading, memory injection, intent guard, result convergence) from individual nodes into an ordered Middleware pipeline; adding new capabilities only touches the corresponding Middleware layer, with zero changes to the core Agent reasoning code
+  - **External RPC entry:** Wrapped a `AdJarvisSkillService` (gRPC) on top of the Harness, supporting both synchronous `ExecuteSkill` and streaming `ExecuteSkillStream`; each request uses standalone mode with an independent session; available skill whitelist configured via Kconf for zero-deployment gray rollout
+- **My role:**
+  - Led the Harness architecture design, drove the migration from fixed Workflow to Lead Agent + dynamic tool dispatch
+  - Implemented the Middleware Chain, decoupling cross-cutting concerns (context management, memory R/W, intent guard) from business nodes
+  - Designed and implemented the external RPC entry (`AdJarvisSkillService`) and standalone execution layer, eliminating duplicate logic between skill and batchEvaluation pipelines
+  - Designed intent guard + Kconf gray rollout configuration, supporting per-tenant whitelist expansion without redeployment
+  - **Result:** Time to add new business capabilities reduced by ~50% (eliminated main Workflow modification + integration cycle); external skill RPC success rate ≥ 99.5%, P99 ≤ 8s after gray rollout
 
 ---
 
-- **Open Source:** 6 months continuous Apache contribution — **[youngest Apache Committer globally at age 18](https://github.com/GuoDongdongdong)**; core contributor to ByteDance/DeerFlow, Apache Fory, Spring AI Alibaba, Ant Design X; **#1 issue resolver at Alibaba Cloud-Native Global Coding Challenge 2024, technical article won Best Quality Award**; Tencent Rhino-Bird Open Source Competition **Topic Practice Award & Issue Practice Award 2024**; OSPP 2024 (ByteDance/VisActor component development).
-- **AdventureX AI Hackathon:** Built world's first Apple Vision Pro Agent — won **Kimi For Vibe Coding Award, 2nd place in Spatial Intelligence track & Injective $1000**.
-- **AI Startup partner:** Helped multiple AI startups backed by Mingge, Sequoia, Blue Run, Qijing and other top VCs land Agentic business; deep collaboration with Kimi, Zhipu GLM, MiniMax, Doubao, Trae and other leading LLM/AI products — participated in official evaluations and Demo production, producing **technical articles, evaluation notes and Demo videos**.
-- Built Live2D/3D digital avatars in high school; former product manager on an anime platform; deep understanding of ACG culture.
+#### Smart Product Selection Agent — Short Drama LLM Recommendation System
+
+- **Background:** In Kuaishou's short drama advertising business, delivery teams needed to select the most suitable short dramas from a massive content library for advertisers to promote. The original process relied on manual selection and rule-based filtering, resulting in low efficiency and limited personalization. **Goal:** Build a smart product selection Agent using LLM to automate "input advertiser intent → analyze audience characteristics → multi-dimensional retrieval + ranking + recommendation" end-to-end.
+- **Architecture:** Refactored existing rule-based Workflow into Agent mode on KFlow:
+  - Intent parsing: LLM parses advertiser input (target industry, audience profile, budget, delivery objective), structurally extracts selection constraints
+  - Drama profile construction: Multi-dimensional vectorized features based on content, audience data, and historical delivery performance (genre / cast / tone / audience demographics)
+  - Retrieval and ranking: Vector similarity recall of candidate dramas → multi-feature fusion (content match score + historical CTR + audience overlap) → LLM rerank with recommendation rationale
+  - ReAct loop: Agent calls tools on demand ("drama search", "audience analysis", "historical performance query") until satisfying constraints
+  - Result output: Structured recommendation list (drama info + recommendation rationale + expected performance estimates)
+- **My role:**
+  - Refactored rule-based Workflow into Agent architecture, designed the complete pipeline: intent parsing → tool orchestration → ReAct loop
+  - Designed drama profile feature engineering, integrated internal vector retrieval service, completed "intent constraints → feature vectors → candidate recall" pipeline
+  - Implemented LLM rerank node for personalized re-ranking with structured recommendation rationale
+  - Registered Agent tools (drama search / audience analysis / performance data query), supporting multi-turn ReAct tool calls
+  - **Result:** Selection efficiency improved 60%+ vs. manual process; average audience overlap between recommended dramas and advertiser target audience improved ~25%
