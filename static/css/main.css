@@ -580,6 +580,11 @@ strong { font-weight: 700; }
     background: #fff;
   }
 
+  /* 打印页面宽度由纸张决定（约 703px），会误触发屏幕的
+     (max-width: 880px) 单列规则 —— 导致打印预览里奖项变成一列。
+     此处显式恢复两列。 */
+  .sec-body--awards > ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
   /* 保留深蓝项目标题等底色与颜色 */
   * {
     -webkit-print-color-adjust: exact;

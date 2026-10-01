@@ -1,11 +1,11 @@
-**Agent 架构设计：** Agent Harness 架构 / Lead Agent 决策中枢 / 动态工具调度（Tool Dispatch）/ ReAct 循环 / Plan-and-Execute / Multi-Agent 协作 / Agentic Workflow / 子 Agent 编排
+**Agent 能力：** 熟悉 ReAct / Plan-and-Execute / Reflexion 等范式；具备多 Agent 协作（Planner-Executor-Critic）与 Lead Agent 决策中枢、动态工具调度（Tool Dispatch）的落地经验；熟悉工具调用 schema 设计、参数校验、失败重试与死循环检测
 
-**上下文与记忆工程：** Context Engineering / 上下文压缩与裁剪 / 短期记忆与长期记忆注入 / 多轮会话状态管理 / System Prompt 动态拼装 / 工具清单动态注入 / Intent Guard 意图守卫
+**LLM 基础：** 熟悉 GPT-4 / Claude / Qwen 等模型选型与效果权衡；掌握 CoT、Few-shot、结构化输出（JSON Schema）等 Prompt 技术；熟悉上下文压缩与长期记忆注入；了解 LoRA 微调与 vLLM 推理加速
 
-**LLM 应用与 RAG：** Prompt Engineering / Function Calling / Structured Output（JSON Schema）/ RAG 检索增强生成 / 向量检索与召回排序 / LLM Rerank / 多路特征融合 / LLM-as-Judge
+**工程与框架：** 熟练使用 LangGraph / LangChain / AutoGen；熟悉 FastAPI 异步服务、gRPC、SSE 流式输出与 token 成本控制；具备中间件流水线（Middleware Chain）解耦与 A/B 灰度放量经验
 
-**模型与对齐：** PyTorch / SFT 监督微调 / RL 训练数据构造 / 效果评测与 Badcase 归因 / 主流模型 API（OpenAI / Claude / 通义千问 / 豆包）
+**数据与检索：** 熟悉 FAISS / Milvus 向量检索，掌握混合检索 + Rerank 与 RAG 上下文压缩
 
-**工程与后端：** Python / TypeScript / Java / Go / SQL / gRPC / FastAPI / Spring Boot / Node.js / Redis / MySQL / MongoDB / Kafka / Docker / Nginx / AIPaaS
+**语言与基础设施：** 精通 Python，熟悉 TypeScript / Java；熟悉 Docker / K8s、Redis、MySQL、Kafka、Linux
 
-**工作流与协作：** KFlow 工作流引擎 / 低代码平台 / A/B Testing / Git / GitHub Actions / Linux / 灰度发布与白名单放量
+**加分项：** 熟悉 LangSmith / Langfuse 链路追踪；有 LLM-as-Judge 自建评测集与 Badcase 归因经验

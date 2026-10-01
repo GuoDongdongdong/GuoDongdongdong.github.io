@@ -1,11 +1,11 @@
-**Agent Architecture:** Agent Harness architecture / Lead Agent decision core / dynamic tool dispatch / ReAct loop / Plan-and-Execute / Multi-Agent collaboration / Agentic Workflow / sub-agent orchestration
+**Agent Capabilities:** ReAct / Plan-and-Execute / Reflexion paradigms; hands-on multi-agent collaboration (Planner-Executor-Critic), Lead Agent decision core and dynamic tool dispatch; tool-calling schema design, parameter validation, failure retry and infinite-loop detection
 
-**Context & Memory Engineering:** Context Engineering / context compression & pruning / short-term & long-term memory injection / multi-turn session state management / dynamic system prompt assembly / dynamic tool-list injection / Intent Guard
+**LLM Fundamentals:** model selection and trade-offs across GPT-4 / Claude / Qwen; CoT, Few-shot and structured output (JSON Schema) prompting; context compression and long-term memory injection; working knowledge of LoRA fine-tuning and vLLM inference acceleration
 
-**LLM Applications & RAG:** Prompt Engineering / Function Calling / Structured Output (JSON Schema) / RAG / vector retrieval & recall ranking / LLM Rerank / multi-feature fusion / LLM-as-Judge
+**Engineering & Frameworks:** LangGraph / LangChain / AutoGen; FastAPI async services, gRPC, SSE streaming and token cost control; middleware-chain decoupling and A/B gray rollout
 
-**Models & Alignment:** PyTorch / SFT / RL training data construction / evaluation & badcase attribution / mainstream model APIs (OpenAI / Claude / Qwen / Doubao)
+**Data & Retrieval:** FAISS / Milvus vector search; hybrid retrieval + Rerank and RAG context compression
 
-**Engineering & Backend:** Python / TypeScript / Java / Go / SQL / gRPC / FastAPI / Spring Boot / Node.js / Redis / MySQL / MongoDB / Kafka / Docker / Nginx / AIPaaS
+**Languages & Infrastructure:** strong Python, familiar with TypeScript / Java; Docker / K8s, Redis, MySQL, Kafka, Linux
 
-**Workflow & Collaboration:** KFlow workflow engine / low-code platforms / A/B Testing / Git / GitHub Actions / Linux / gray release & whitelist rollout
+**Nice to Have:** LangSmith / Langfuse tracing; hands-on LLM-as-Judge evaluation sets and badcase attribution
