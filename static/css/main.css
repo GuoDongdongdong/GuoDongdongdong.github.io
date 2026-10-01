@@ -223,7 +223,7 @@ strong { font-weight: 700; }
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 3px 8px;
+  gap: 3px 6px;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -238,7 +238,8 @@ strong { font-weight: 700; }
 }
 .eb-company {
   font-weight: 800;
-  font-size: 0.92rem;
+  /* 13.5px：公司全称较长（含「（快手科技）」），再大就会把日期挤到下一行 */
+  font-size: 13.5px;
   color: #111;
   white-space: nowrap;
 }
@@ -248,6 +249,9 @@ strong { font-weight: 700; }
   font-weight: 700;
   font-size: 12.5px;
   white-space: nowrap;
+  /* 等宽数字，与奖项年份同一处理：Inter 默认比例数字，「1」偏窄会让日期参差 */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 .eb-role {
   color: var(--muted);
@@ -315,14 +319,38 @@ strong { font-weight: 700; }
   font-size: 0.47em;
   line-height: 2.05;
 }
-/* 荣誉奖项：名称 + 年份两列，使各条年份左边缘纵向对齐。
-   .is-emph 是论文条目（contains <em>），单独成列表，排除在网格外，保持一行。
-   必须限定 .sec-body--awards，否则会误伤工作经历/技能的列表。 */
-.sec-body--awards > ul > li:not(.is-emph) {
+/* 荣誉奖项：两列排布，整块不加粗。
+   .is-award 每个占 1 格（2 列网格自动流式排布，形成两列）；
+   .is-emph（论文条目）横跨两列。必须限定 .sec-body--awards，
+   否则会误伤工作经历/技能的列表。窄屏由下方媒体查询降为单列。 */
+.sec-body--awards > ul {
   display: grid;
-  grid-template-columns: max-content max-content;
-  column-gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 26px;
+  row-gap: 1px;
   align-items: baseline;
+}
+/* 论文条目：横跨两列 */
+.sec-body--awards > ul > li.is-emph { grid-column: 1 / -1; }
+
+/* 奖项条目：名称 + 固定宽度的年份栏。
+   年份栏宽度固定，因此同一列内各条年份的「数字左端」齐平。 */
+.sec-body--awards > ul > li.is-award {
+  display: flex;
+  align-items: baseline;
+  line-height: 1.55;
+}
+.sec-body--awards .aw-year {
+  flex: 0 0 var(--aw-year-w, 46px);   /* 固定栏宽 -> 左端对齐 */
+  white-space: nowrap;
+  /* 等宽数字：很多字体里「1」比其它数字窄，比例数字会让 2019 短于 2024，
+     同列年份看着仍参差。tabular-nums 让每个数字占同样宽度。 */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+.sec-body--awards .aw-name {
+  flex: 1 1 auto;
+  min-width: 0;                        /* 名称过长时折行，不挤走年份栏 */
 }
 /* Level 2 ○ */
 .sec-body ul ul {
@@ -511,6 +539,10 @@ strong { font-weight: 700; }
 @media (max-width: 940px) {
   :root { --pad-h: 28px; --pad-v: 14px; --pad-v-top: 8px; }
   .resume-wrap { margin: 10px auto 16px; }
+}
+/* 奖项两列在窄屏会挤在一起（英文最长名称达 324px），降为单列 */
+@media (max-width: 880px) {
+  .sec-body--awards > ul { grid-template-columns: minmax(0, 1fr); }
 }
 /* 窄屏：联系方式换行显示，不做特殊处理（flex-wrap 已自适应） */
 @media (max-width: 600px) {

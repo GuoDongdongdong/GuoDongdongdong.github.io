@@ -1,4 +1,4 @@
-### 🏢 Beijing Dajia Internet Information Technology Co., Ltd. (Kuaishou Technology) --- Jun 30, 2025 - Present | Full-time | Commercialization Technology Dept. / External Loop Backend Team
+### Beijing Dajia Internet Information Technology Co., Ltd. (Kuaishou Technology) --- Jun 30, 2025 - Present | Commercialization Technology Dept. / External Loop Backend Team
 
 #### Cili Qingsong Agent — Workflow to Agent Harness Architecture Migration
 

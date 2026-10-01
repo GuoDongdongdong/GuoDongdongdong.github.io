@@ -4,10 +4,10 @@
 
 **Awards & Honors**
 
-- National Scholarship (2024)
-- University Second-Class Scholarship (2023)
-- University First-Class Scholarship (2022)
-- University Second-Class Scholarship (2020)
-- National Encouragement Scholarship (2019)
-- ICPC Shaanxi Provincial Contest, Bronze Medal (2019)
-- University First-Class Scholarship (2018)
+- <span class="aw-name">National Scholarship</span> <span class="aw-year">2024</span>
+- <span class="aw-name">University Second-Class Scholarship</span> <span class="aw-year">2023</span>
+- <span class="aw-name">University First-Class Scholarship</span> <span class="aw-year">2022</span>
+- <span class="aw-name">University Second-Class Scholarship</span> <span class="aw-year">2020</span>
+- <span class="aw-name">National Encouragement Scholarship</span> <span class="aw-year">2019</span>
+- <span class="aw-name">ICPC Shaanxi Provincial Contest, Bronze Medal</span> <span class="aw-year">2019</span>
+- <span class="aw-name">University First-Class Scholarship</span> <span class="aw-year">2018</span>

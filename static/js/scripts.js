@@ -124,20 +124,23 @@ function buildHeader(cfg, lang) {
   document.title = cfg[`page_title_${lang}`] || cfg['page_title'] || name;
 }
 
-/* ---------- 标记「强调条目」 ----------
-   对含 <em>（斜体）的条目加 .is-emph，用于把「论文条目」从奖项的
-   年份对齐网格（.sec-body--awards > ul > li:not(.is-emph)）中排除。
+/* ---------- 标记列表条目 ----------
+   奖项区块里分两类条目：
+     .is-emph  含 <em>（斜体）= 论文条目，横跨两列
+     .is-award 含 .aw-year（年份标记）= 奖项条目，参与两列网格
 
-   ⚠️ 依赖：contents/{zh,en}/awards.md 里论文那一条必须保留 *斜体* 标记
-   （markdown 单星号），否则这里判不出来，论文会被当成奖项套上两列网格。
-   论文的「SCI 一区 | 第一作者」为与奖项保持一致的正文色而不加粗 —— 
-   本函数只依赖斜体，与字重无关。
+   ⚠️ 依赖：contents/{zh,en}/awards.md
+     - 论文那一条必须保留 *斜体*（markdown 单星号）
+     - 奖项那条的年份必须包在 <span class="aw-year">…</span> 里
+   （年份曾经用 **加粗** 标记，但奖项整体不加粗后改用 span，
+     这样年份仍可与名称分开定位、推到格子右端。）
 
-   注意：不要改用 li:not(:has(em)) 当选择器 —— 那会命中全文档所有
+   注意：不要改用 li:not(:has(em)) 之类的选择器 —— 那会命中全文档所有
    列表项，把工作经历/技能的要点也套上两列网格。 */
 function markEmphasisItems(body) {
   body.querySelectorAll(':scope > ul > li').forEach(li => {
     if (li.querySelector('em')) li.classList.add('is-emph');
+    if (li.querySelector('.aw-year')) li.classList.add('is-award');
   });
 }
 
