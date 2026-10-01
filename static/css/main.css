@@ -17,7 +17,7 @@
   --pad-h:     52px;
   --pad-v:     20px;
   /* 纸张顶部内边距单独控制（头像上方的留白就是它） */
-  --pad-v-top: 12px;
+  --pad-v-top: 28px;
   --topbar-h:  44px;
   --font:      'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
@@ -116,13 +116,24 @@ strong { font-weight: 700; }
 }
 
 /* Top row: left (name + contact + summary) | right (avatar)
-   文字块与头像等高并底对齐：姓名/联系的最下一行与照片下边缘齐平 */
+   姓名与联系方式在左列内水平居中，且与头像**中心对齐** ——
+   这样头像上下的留白相等（各约 21px），头部视觉对称。
+   （若改成 align-items: flex-end，文字块会贴到与头像底端齐平，
+     头像上方留白变成约 42px、下方为 0，上下明显不对称。）
+   不设 padding-top 硬撑高度，避免联系行增删一项就失准。 */
 .rh-top {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 18px;
 }
-.rh-left { flex: 1; min-width: 0; padding-top: 62px; }
+.rh-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 .rh-right { flex-shrink: 0; }
 
 .rh-name {
@@ -142,11 +153,12 @@ strong { font-weight: 700; }
   color: var(--muted);
 }
 
-/* 联系方式：同一行排列（放不下才换行） */
+/* 联系方式：同一行排列（放不下才换行），整体水平居中 */
 .rh-contact-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   column-gap: 20px;
   row-gap: 4px;
   font-size: 13px;
@@ -223,12 +235,41 @@ strong { font-weight: 700; }
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 3px 6px;
+  /* 第一个值=行间距；第二个值=列间距。
+     英文教育条目在「13.5px + 800」下较长（学校167 + 专业242 + 学历225 + 时间134），
+     列间距需压到 5px 才能不换行。 */
+  gap: 3px 5px;
   font-size: 13px;
   line-height: 1.6;
 }
 
-/* 无底色版（教育背景用）——去掉灰底、内边距与分隔线，纯文字排版 */
+/* 无底色版（教育背景用）——去掉灰底、内边距与分隔线，纯文字排版。
+   教育条目的呈现顺序为「学校 │ 专业 │ 学历 ……… 时间（右端）」，
+   与工作经历「公司 ─── 时间 │ 职位 │ 部门」不同，故用 flex order 重排。
+   DOM 顺序：学校 · ─── · 时间 · │ · 学历 · │ · 专业
+   （日期必须在首位，parseEntryBar 才会把它识别为 .eb-date；
+     学校名由 parseEntryBar 从 data-school 占位符取出后直接注入文本，不用 attr()）
+   视觉顺序：学校(1) │(2) 专业(3) │(4) 学历(5) → 时间(6, margin-left:auto 推右端)
+
+   纵向对齐：学校列与专业列设固定宽度，使两条学历的 │ 与各字段落在同一竖线上。
+   列宽按语言分别设定 —— 中英文所需宽度相差很大（学校列 77 vs 167、
+   专业列 121 vs 230），用同一套宽度时中文下会浪费约 200px 空白。
+   借 html[lang] 切换（scripts.js 在切语言时会更新该属性）：
+     中文 --edu-school-w 85 / --edu-major-w 129
+     英文 --edu-school-w 172 / --edu-major-w 232
+   窄屏由下方媒体查询取消固定宽度，避免溢出。
+
+   两个 │ 用各自的区分类名定序（不用 ~ 兄弟选择器：
+   .eb-dept2 ~ .eb-sep--pipe 会命中 DOM 中位于「专业」之后的那根，
+   而它在 DOM 里紧跟在「学历」后面，导致定序错位、两根竖线挤在一起）。 */
+/* 教育条目列宽：按语言分别给值（scripts.js 切语言时会更新 html[lang]）
+   宽度需覆盖「13.5px + 800 字重」下的最长文本：
+     中文 学校 77 / 专业 121        英文 学校 167 / 专业 242
+   英文专业加粗后由 205 涨到 242，故英文专业列由 232 加到 252。 */
+:root { --edu-school-w: 172px; --edu-major-w: 250px; }   /* 默认按英文 */
+html[lang="zh"] { --edu-school-w: 85px;  --edu-major-w: 129px; }
+html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
+
 .entry-bar--plain {
   background: transparent;
   padding: 0;
@@ -236,6 +277,37 @@ strong { font-weight: 700; }
   /* 两条学历之间不做任何分隔，仅靠行距区隔 */
   margin: 7px 0 10px;
 }
+.entry-bar--plain .eb-company {
+  order: 1;
+  font-size: 13.5px;
+  font-weight: 800;
+  flex: 0 0 var(--edu-school-w);
+}
+.entry-bar--plain .eb-dept2 {
+  order: 3;                    /* 专业 */
+  flex: 0 0 var(--edu-major-w);
+  /* 与学校统一：同字号、同字重、同颜色（#111 而非 --muted 的 #444） */
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #111;
+}
+.entry-bar--plain .eb-role {
+  order: 5;                    /* 学历 */
+  flex: 0 0 auto;
+  /* 与学校统一：同字号、同字重、同颜色 */
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #111;
+}
+.entry-bar--plain .eb-date {
+  order: 6;
+  margin-left: auto;           /* 时间推到行尾右端 */
+}
+/* 学校后的 ─── 分隔符：教育条目不需要 */
+.entry-bar--plain .eb-sep--after-company { display: none; }
+/* p1 在「学校」之后，p2 在「专业」之后 */
+.entry-bar--plain .eb-sep--p1 { order: 2; }
+.entry-bar--plain .eb-sep--p2 { order: 4; }
 .eb-company {
   font-weight: 800;
   /* 13.5px：公司全称较长（含「（快手科技）」），再大就会把日期挤到下一行 */
@@ -244,6 +316,22 @@ strong { font-weight: 700; }
   white-space: nowrap;
 }
 .eb-sep { color: #999; font-weight: 300; font-size: 12px; }
+/* 工作经历的角色（Java 工程师）与公司名统一：同字号、同字重、同颜色。
+   颜色必须显式覆盖 —— .eb-role 全局是 var(--muted) = #444，
+   而公司名是 #111；只加粗不改色，视觉上仍会觉得「发灰」。
+   限定 .entry-bar--enddate（工作经历条目），不影响教育/其他区块。 */
+.entry-bar--enddate .eb-role {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #111;
+}
+/* 时间放到行尾右端（工作经历用）。.eb-date 与 .eb-role 同为单类选择器，
+   但 .entry-bar--enddate .eb-date 是两个类，优先级更高，故 order 生效。 */
+.entry-bar--enddate .eb-date { order: 9; margin-left: auto; }
+/* 工作经历：公司名后的 ─── 分隔符隐掉。
+   时间已移到行尾、职位前有 │，这条长横线不再必要，且公司全称较长时显得杂乱。
+   教育条目的同类分隔符本就已隐藏（.entry-bar--plain 那条规则）。 */
+#sec-experience .eb-sep--after-company { display: none; }
 .eb-date {
   color: var(--red);
   font-weight: 700;
@@ -367,6 +455,13 @@ strong { font-weight: 700; }
    只关掉符号，不影响工作经历/技能的列表。 */
 .sec-body--awards ul > li::before { display: none; }
 .sec-body--awards ul > li { padding-left: 0; }
+/* 工作经历：一级条目（项目背景 / 项目难点 / 核心动作 / 项目收益）
+   不加列表符号 —— 它们本身已加粗，且与嵌套子项同用 ● 会层次不清。
+   嵌套子项保留 ● ○ ■ 三级符号。
+   限定 #sec-experience（section id 由 scripts.js 以 sec-<key> 生成），
+   不影响技能、教育、奖项等区块。 */
+#sec-experience .sec-body > ul > li::before { display: none; }
+#sec-experience .sec-body > ul > li { padding-left: 0; }
 /* Level 2 ○ */
 .sec-body ul ul {
   margin: 2px 0 2px 1em;
@@ -564,13 +659,19 @@ strong { font-weight: 700; }
 @media (max-width: 600px) {
   :root { --pad-h: 14px; --pad-v: 9px; --pad-v-top: 6px; }
   .rh-top { align-items: flex-start; }
-  .rh-left { padding-top: 0; }
+  /* 窄屏联系方式会折行、文字块可能比头像高，改为顶对齐更稳妥（已在 .rh-top 设定） */
   .rh-contact-row { font-size: 12.5px; column-gap: 14px; row-gap: 2px; }
   /* 手机端只改宽度，height 保持 auto，照片依旧不被裁切 */
   .rh-avatar { width: 84px; height: auto; border-radius: 0; }
   .rh-avatar-placeholder { width: 84px; height: 112px; font-size: 1.5rem; border-radius: 0; }
   .rh-summary { font-size: 12px; line-height: 1.7; }
   .eb-link { margin-left: 0; width: 100%; }
+    /* 手机端取消教育条目的固定列宽：可用宽度不足以容纳固定列，
+       强行保留会溢出；此时让各字段按内容排布，时间单独换到下一行右端。 */
+    .entry-bar--plain { flex-wrap: wrap; }
+    .entry-bar--plain .eb-company,
+    .entry-bar--plain .eb-dept2 { flex: 0 1 auto; }
+    .entry-bar--plain .eb-date { flex-basis: 100%; margin-left: 0; order: 9; }
   .topbar { padding: 0 14px; }
   .topbar-name { max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }

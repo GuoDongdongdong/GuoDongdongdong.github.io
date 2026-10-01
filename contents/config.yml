@@ -12,10 +12,13 @@ name_en: Xu Guodong
 # 显示大小请在 main.css 的 .rh-avatar 里改 width。
 avatar_url: "static/assets/img/avatar.jpg"
 
-# ── 联系行（电话 | 邮箱 | 城市）─────────────
+# ── 联系行（电话 | 邮箱 | 城市 | 年龄）───────
 phone: "15389490059"
 email: a645219093@qq.com
 location: "北京"
+# 年龄：留空则不显示该项
+age_zh: "26 岁"
+age_en: "26 years old"
 
 # ── 姓名下方简介行（暂不使用，留空则整块不渲染）──
 # 需要时取消注释并改写内容即可；想换行可用 <br>

@@ -36,20 +36,32 @@ function parseEntryBar(innerHTML) {
   if (dashIdx === -1) {
     return `<span class="eb-company">${innerHTML}</span>`;
   }
-  const company = innerHTML.slice(0, dashIdx).trim();
+
+  // 允许用 <span data-school="学校名"></span> 占位来指定「公司/学校」字段：
+  // 借助占位符可以让「时间」在 markdown 里排在最前（parseEntryBar 要求
+  // 日期是首个字段才能识别为 .eb-date），而学校名字取自 data-school。
+  // 这里把占位符替换成真实文字，避免依赖 CSS 的 content: attr()（支持不稳定）。
+  const schoolMatch = /data-school="([^"]*)"/.exec(innerHTML);
+  const schoolName  = schoolMatch ? schoolMatch[1] : '';
+
+  const company = innerHTML.slice(0, dashIdx)
+    .replace(/<span[^>]*data-school="[^"]*"[^>]*>\s*<\/span>/g, '')
+    .trim();
   const rest    = innerHTML.slice(dashIdx + 3).trim();
   const parts   = rest.split('|').map(s => s.trim());
 
-  let out = `<span class="eb-company">${company}</span>`;
-  out += `<span class="eb-sep"> ─── </span>`;
+  let out = `<span class="eb-company">${schoolName || company}</span>`;
+  out += `<span class="eb-sep eb-sep--after-company"> ─── </span>`;
 
   parts.forEach((p, i) => {
     if (i === 0) {
       out += `<span class="eb-date">${p}</span>`;
     } else if (i === 1) {
-      out += ` <span class="eb-sep">│</span> <span class="eb-role">${p}</span>`;
+      // 第一个竖线：用于「学校/公司」与后一项之间的分隔
+      out += ` <span class="eb-sep eb-sep--pipe eb-sep--p1">│</span> <span class="eb-role">${p}</span>`;
     } else if (i === 2) {
-      out += ` <span class="eb-sep">│</span> <span class="eb-dept2">${p}</span>`;
+      // 第二个竖线：用于「中间项」与「专业/部门」之间的分隔
+      out += ` <span class="eb-sep eb-sep--pipe eb-sep--p2">│</span> <span class="eb-dept2">${p}</span>`;
     } else {
       // Last segment → right-aligned red link
       out += `<span class="eb-link">${p}</span>`;
@@ -63,10 +75,15 @@ function postProcess(container, key) {
   // 注意：此处 container 尚未插入 DOM，closest() 查不到父级 section，
   // 因此必须用 section key 判断，不能靠 closest。
   const isEducation = key === 'education';
+  // 工作经历的条目把时间放到行尾右端（与教育背景一致），
+  // 视觉顺序变为「公司 ─── 职位/部门 …… 时间」
+  const isExperience = key === 'experience';
 
   container.querySelectorAll('h3').forEach(h3 => {
     const div = document.createElement('div');
-    div.className = isEducation ? 'entry-bar entry-bar--plain' : 'entry-bar';
+    div.className = 'entry-bar'
+      + (isEducation ? ' entry-bar--plain' : '')
+      + (isExperience ? ' entry-bar--enddate' : '');
     div.innerHTML = parseEntryBar(h3.innerHTML);
     h3.replaceWith(div);
   });
@@ -85,6 +102,7 @@ function buildHeader(cfg, lang) {
   const email      = cfg['email']            || '';
   const phone      = cfg['phone']            || '';
   const location   = cfg['location']         || '';
+  const age        = cfg[`age_${lang}`]      || cfg['age'] || '';
   const avatarUrl  = cfg['avatar_url']       || '';
   const summary    = cfg[`summary_${lang}`]  || cfg['summary'] || '';
 
@@ -98,11 +116,12 @@ function buildHeader(cfg, lang) {
     ? `<img class="rh-avatar" src="${avatarUrl}" alt="avatar" />`
     : `<div class="rh-avatar rh-avatar-placeholder"><i class="bi bi-person-fill"></i></div>`;
 
-  // Contact row items: phone | email | location
+  // Contact row items: phone | email | location | age
   const items = [];
   if (phone)      items.push(`<span class="rh-ci"><i class="bi bi-telephone-fill"></i>${phone}</span>`);
   if (email)      items.push(`<span class="rh-ci"><i class="bi bi-envelope-fill"></i><a href="mailto:${email}">${email}</a></span>`);
   if (location)   items.push(`<span class="rh-ci"><i class="bi bi-geo-alt-fill"></i>${location}</span>`);
+  if (age)        items.push(`<span class="rh-ci"><i class="bi bi-person-fill"></i>${age}</span>`);
   const contactRow = items.join('<span class="rh-cdot">·</span>');
 
   el.innerHTML = `
