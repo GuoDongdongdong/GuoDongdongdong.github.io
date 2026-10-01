@@ -319,39 +319,54 @@ strong { font-weight: 700; }
   font-size: 0.47em;
   line-height: 2.05;
 }
-/* 荣誉奖项：两列排布，整块不加粗。
-   .is-award 每个占 1 格（2 列网格自动流式排布，形成两列）；
-   .is-emph（论文条目）横跨两列。必须限定 .sec-body--awards，
-   否则会误伤工作经历/技能的列表。窄屏由下方媒体查询降为单列。 */
-.sec-body--awards > ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 26px;
-  row-gap: 1px;
-  align-items: baseline;
-}
-/* 论文条目：横跨两列 */
-.sec-body--awards > ul > li.is-emph { grid-column: 1 / -1; }
+/* 荣誉奖项：用 markdown 表格排两列。
+   表格天然保证「按行列顺序」与「年份列对齐」，不需要任何网格/列优先技巧 ——
+   之前用 grid 反复折腾列优先与行号，反而引入一堆错位问题。
+   结构：奖项 | 年份 | 奖项 | 年份（4 列），年份固定在第 2 / 第 4 列。
+   奖项按年份降序填写，最后一格留空即可。增删奖项只改 markdown，不动 CSS。
 
-/* 奖项条目：名称 + 固定宽度的年份栏。
-   年份栏宽度固定，因此同一列内各条年份的「数字左端」齐平。 */
-.sec-body--awards > ul > li.is-award {
-  display: flex;
-  align-items: baseline;
-  line-height: 1.55;
+   两列等分：用 table-layout: fixed。自动布局会按内容比例分配，名称长的
+   那一组会占更多宽度，导致两列分界线偏离中线；固定布局下
+   年份列强制 58px、名称列不设宽度 -> 两组各占一半，左右对称。 */
+.sec-body--awards table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+  line-height: 1.6;
 }
-.sec-body--awards .aw-year {
-  flex: 0 0 var(--aw-year-w, 46px);   /* 固定栏宽 -> 左端对齐 */
+.sec-body--awards th,
+.sec-body--awards td {
+  text-align: left;
+  padding: 3px 0;
+  vertical-align: baseline;
+}
+/* 表头只作 markdown 语法需要，不显示 */
+.sec-body--awards th { display: none; }
+/* 版面：两组各占一半。
+   table-layout: fixed 下宽度含 padding，因此：
+     - 名称列不设 padding-right，把整列宽度都留给名称（避免长名称折行）
+     - 组间间距放在年份列右侧，保证「年份 → 下一组名称」之间有呼吸空间
+       （若加在名称列上，那是名称与年份之间，组间仍为 0，年份会顶住下一组）
+   年份列固定宽度并右对齐。 */
+.sec-body--awards td:nth-child(2),
+.sec-body--awards td:nth-child(4) {
+  width: 62px;
+  text-align: right;
   white-space: nowrap;
-  /* 等宽数字：很多字体里「1」比其它数字窄，比例数字会让 2019 短于 2024，
-     同列年份看着仍参差。tabular-nums 让每个数字占同样宽度。 */
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums;   /* 比例数字下「1」偏窄会让年份参差 */
   font-feature-settings: "tnum" 1;
 }
-.sec-body--awards .aw-name {
-  flex: 1 1 auto;
-  min-width: 0;                        /* 名称过长时折行，不挤走年份栏 */
-}
+.sec-body--awards td:nth-child(1),
+.sec-body--awards td:nth-child(3) { padding-right: 18px; }
+.sec-body--awards td:nth-child(2),
+.sec-body--awards td:nth-child(4) { padding-right: 26px; }   /* 组间间距 */
+/* 行分隔线，便于扫读 */
+.sec-body--awards tbody tr { border-bottom: 1px solid var(--rule-2); }
+/* 荣誉奖项区块不显示列表符号（表格本身已足够清晰）。
+   只关掉符号，不影响工作经历/技能的列表。 */
+.sec-body--awards ul > li::before { display: none; }
+.sec-body--awards ul > li { padding-left: 0; }
 /* Level 2 ○ */
 .sec-body ul ul {
   margin: 2px 0 2px 1em;
@@ -540,9 +555,10 @@ strong { font-weight: 700; }
   :root { --pad-h: 28px; --pad-v: 14px; --pad-v-top: 8px; }
   .resume-wrap { margin: 10px auto 16px; }
 }
-/* 奖项两列在窄屏会挤在一起（英文最长名称达 324px），降为单列 */
+/* 奖项表格在窄屏：名称折行即可，不需要列切换逻辑（表格自然收窄） */
 @media (max-width: 880px) {
-  .sec-body--awards > ul { grid-template-columns: minmax(0, 1fr); }
+  .sec-body--awards td { padding-right: 8px; }
+  .sec-body--awards td:nth-child(2) { padding-right: 18px; }
 }
 /* 窄屏：联系方式换行显示，不做特殊处理（flex-wrap 已自适应） */
 @media (max-width: 600px) {
@@ -580,10 +596,8 @@ strong { font-weight: 700; }
     background: #fff;
   }
 
-  /* 打印页面宽度由纸张决定（约 703px），会误触发屏幕的
-     (max-width: 880px) 单列规则 —— 导致打印预览里奖项变成一列。
-     此处显式恢复两列。 */
-  .sec-body--awards > ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* 奖项用表格排两列后，不再依赖网格：打印宽度（约 718px）下表格自然收窄，
+     两列与年份对齐都保持，无需任何覆盖规则。 */
 
   /* 保留深蓝项目标题等底色与颜色 */
   * {

@@ -4,10 +4,9 @@
 
 **荣誉奖项**
 
-- <span class="aw-name">国家奖学金</span> <span class="aw-year">2024</span>
-- <span class="aw-name">校级二等奖学金</span> <span class="aw-year">2023</span>
-- <span class="aw-name">校级一等奖学金</span> <span class="aw-year">2022</span>
-- <span class="aw-name">校级二等奖学金</span> <span class="aw-year">2020</span>
-- <span class="aw-name">国家励志奖学金</span> <span class="aw-year">2019</span>
-- <span class="aw-name">陕西省 ICPC 程序设计竞赛 铜奖</span> <span class="aw-year">2019</span>
-- <span class="aw-name">校级一等奖学金</span> <span class="aw-year">2018</span>
+| 奖项 | 年份 | 奖项 | 年份 |
+| --- | --- | --- | --- |
+| 国家奖学金 | 2024 | 国家励志奖学金 | 2019 |
+| 校级二等奖学金 | 2023 | 陕西省 ICPC  铜奖 | 2019 |
+| 校级一等奖学金 | 2022 | 校级一等奖学金 | 2018 |
+| 校级二等奖学金 | 2020 | | |
