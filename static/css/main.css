@@ -288,21 +288,14 @@ strong { font-weight: 700; }
 }
 html[lang="zh"] { --edu-school-w: 91px;  --edu-major-w: 143px; --entry-fs: 16px; --body-fs: 16px; --sec-title-fs: 19px; --sec-icon-fs: 16px; --proj-title-fs: 18px; --contact-fs: 17px; --contact-icon-fs: 15.5px; }
 html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5px; --body-fs: 14.5px; --sec-title-fs: 17px; --sec-icon-fs: 14px; --proj-title-fs: 16px; --contact-fs: 15px; --contact-icon-fs: 14px; }
-/* 三行（两条学历 + 一条工作经历）的日期列对齐。
-   教育条目 .entry-bar--plain 无内边距，内容区 0~796；
-   工作经历 .entry-bar 有 padding: 0 10px，内容区 10~786。
-   两者日期列宽同为 --date-w 且左对齐，但右端相差 10px，
-   故给工作经历日期列 -10px 负右外边距把它右移补齐。
-   -10px：右端 786+10=796，左端 796-146=650
-          与教育条目（650~796）完全重合。
-   ⚠️ 曾误用 -20px，实测截图工作经历日期偏右 15px（左端 53 vs 教育 38）。
-   调整本值时建议实测：教育日期左端 x 应等于工作经历日期左端 x。 */
-#sec-experience .entry-bar--enddate .eb-date { margin-right: -10px; }
-   工作经历 .entry-bar 有 padding: 0 10px，内容区 10~786。
-   两者日期列宽同为 --date-w，但右端相差 20px（796 vs 776），
-   故给工作经历的日期列一个 -20px 的负右外边距，把它右移到与教育相同的位置。
-   调好后三行日期左右端都对齐。 */
-#sec-experience .entry-bar--enddate .eb-date { margin-right: -20px; }
+/* 三行日期列对齐：工作经历日期左移，补齐内边距造成的偏移。
+   教育条目 .entry-bar--plain 无内边距（内容区 0~796）；
+   工作经历 .entry-bar 有 padding: 0 10px（内容区 10~786）。
+   实测：margin-right 为 -10px 时，工作经历日期左端比教育偏右 5px，
+   故改为 -5px（margin-right 每 +1px，该元素左移 1px）。
+   ⚠️ 该值是实测得来，非纯推算 —— 我的宽度模型与浏览器实际渲染有误差。
+   调整后请核对：工作经历日期左端应与教育条目日期左端对齐。 */
+#sec-experience .entry-bar--enddate .eb-date { margin-right: -5px; }
 /* 时间列：三行统一宽度，右端对齐 */
 .entry-bar--plain .eb-date,
 .entry-bar--enddate .eb-date { flex: 0 0 var(--date-w); text-align: left; }
