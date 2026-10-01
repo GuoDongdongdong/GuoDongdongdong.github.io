@@ -27,7 +27,7 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font);
-  font-size: 13.5px;
+  font-size: var(--body-fs);
   line-height: 1.6;
   color: var(--text);
   background: var(--page-bg);
@@ -148,7 +148,7 @@ strong { font-weight: 700; }
 /* 个人信息摘要 */
 .rh-summary {
   margin-top: 8px;
-  font-size: 12.5px;
+  font-size: var(--body-fs);
   line-height: 1.75;
   color: var(--muted);
 }
@@ -161,7 +161,8 @@ strong { font-weight: 700; }
   justify-content: center;
   column-gap: 20px;
   row-gap: 4px;
-  font-size: 13px;
+  /* 联系行字号独立于正文（--contact-fs），便于单独放大 */
+  font-size: var(--contact-fs);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -172,7 +173,7 @@ strong { font-weight: 700; }
   white-space: nowrap;
   min-width: 0;
 }
-.rh-ci i { color: var(--blue); font-size: 0.82rem; }
+.rh-ci i { color: var(--blue); font-size: var(--contact-icon-fs); }
 .rh-ci a { color: var(--muted); }
 .rh-ci a:hover { color: var(--blue); text-decoration: underline; }
 /* 每项已独立成行，行内分隔点不再需要 */
@@ -205,8 +206,11 @@ strong { font-weight: 700; }
    ============================================== */
 .resume-section { margin-bottom: 18px; }
 
+/* 区块标题（教育背景 / 工作经历 / 专业技能 / 论文发表 & 荣誉奖项）
+   字号走 --sec-title-fs 变量，按语言分别给值（中文可更大）。
+   原为 1.02rem（随 rem 基准，对语言不可控）。 */
 .sec-title {
-  font-size: 1.02rem;
+  font-size: var(--sec-title-fs);
   font-weight: 800;
   color: var(--red);
   border-bottom: 1.5px solid var(--red);
@@ -216,14 +220,14 @@ strong { font-weight: 700; }
   align-items: center;
   gap: 6px;
 }
-.sec-icon { font-size: 0.85rem; opacity: 0.85; }
+.sec-icon { font-size: var(--sec-icon-fs); opacity: 0.85; }
 
 /* ==============================================
    SECTION BODY — MARKDOWN
    ============================================== */
 .sec-body { color: var(--text); }
 
-.sec-body p { margin: 3px 0 7px; font-size: 13.5px; line-height: 1.7; }
+.sec-body p { margin: 3px 0 7px; font-size: var(--body-fs); line-height: 1.7; }
 
 /* ==============================================
    ENTRY BAR (h3 → gray row)
@@ -239,7 +243,7 @@ strong { font-weight: 700; }
      英文教育条目在「13.5px + 800」下较长（学校167 + 专业242 + 学历225 + 时间134），
      列间距需压到 5px 才能不换行。 */
   gap: 3px 5px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -249,26 +253,59 @@ strong { font-weight: 700; }
    DOM 顺序：学校 · ─── · 时间 · │ · 学历 · │ · 专业
    （日期必须在首位，parseEntryBar 才会把它识别为 .eb-date；
      学校名由 parseEntryBar 从 data-school 占位符取出后直接注入文本，不用 attr()）
-   视觉顺序：学校(1) │(2) 专业(3) │(4) 学历(5) → 时间(6, margin-left:auto 推右端)
+   视觉顺序：学校(1) │(2) 专业(3) │(4) 学历(5) → 时间(6, margin-left:auto 推到右端)
 
-   纵向对齐：学校列与专业列设固定宽度，使两条学历的 │ 与各字段落在同一竖线上。
-   列宽按语言分别设定 —— 中英文所需宽度相差很大（学校列 77 vs 167、
-   专业列 121 vs 230），用同一套宽度时中文下会浪费约 200px 空白。
-   借 html[lang] 切换（scripts.js 在切语言时会更新该属性）：
-     中文 --edu-school-w 85 / --edu-major-w 129
-     英文 --edu-school-w 172 / --edu-major-w 232
+   ⚠️ 字号上限 13.5px，由「四项同行」的宽度决定：
+     英文四项合计需 837px，而内容区仅 796px。
+     把学校/专业/学历提到 14.5px 会进一步超出，只能让时间换行；
+     若接受时间另起一行，三者同排只需 697px，字号可到 14.5px。
+     当前取舍：四项同行 + 13.5px。
+
+   纵向对齐：学校列与专业列固定宽度，使两条学历的 │ 与各字段落在同一竖线。
+   宽度按 13.5px 下的最长文本：中文 学校77/专业121，英文 学校167/专业242。
    窄屏由下方媒体查询取消固定宽度，避免溢出。
 
    两个 │ 用各自的区分类名定序（不用 ~ 兄弟选择器：
    .eb-dept2 ~ .eb-sep--pipe 会命中 DOM 中位于「专业」之后的那根，
    而它在 DOM 里紧跟在「学历」后面，导致定序错位、两根竖线挤在一起）。 */
-/* 教育条目列宽：按语言分别给值（scripts.js 切语言时会更新 html[lang]）
-   宽度需覆盖「13.5px + 800 字重」下的最长文本：
-     中文 学校 77 / 专业 121        英文 学校 167 / 专业 242
-   英文专业加粗后由 205 涨到 242，故英文专业列由 232 加到 252。 */
-:root { --edu-school-w: 172px; --edu-major-w: 250px; }   /* 默认按英文 */
-html[lang="zh"] { --edu-school-w: 85px;  --edu-major-w: 129px; }
-html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
+/* 三行（两条学历 + 一条工作经历）的列宽与字号统一。
+   ⚠️ 时间右端此前不对齐：工作经历条目行有 padding: 0 10px，内容右缘在 776px，
+      而教育条目无内边距、右缘在 796px，两者相差 20px。
+      现在给两者同一个固定时间列宽 --date-w，三行的日期起止位置因此一致。
+   字号取 13.5px 是英文教育四项同行的上限（需 796px，可用 796px）；
+      工作经历同步降到 13.5px 以保持一致。 */
+:root {
+  --edu-school-w: 168px;   /* 学校列：英文 "🎓 Northwest University" = 167px */
+  --edu-major-w: 242px;    /* 专业列：英文 "Computer Science and Technology" = 242px */
+  --date-w: 146px;         /* 时间列：三行共用，保证日期左右端对齐 */
+  --entry-fs: 13.5px;       /* 条目行字号：中文可更大（中文 16px） */
+  --body-fs: 14.5px;        /* 正文字号 */
+  --sec-title-fs: 18px;      /* 区块标题字号 */
+  --sec-icon-fs: 15px;       /* 区块标题图标字号 */
+  --proj-title-fs: 17px;    /* 项目标题字号 */
+  --contact-fs: 15px;       /* 联系行（电话/邮箱/城市/年龄）字号 */
+  --contact-icon-fs: 14px;  /* 联系行图标字号 */
+}
+html[lang="zh"] { --edu-school-w: 91px;  --edu-major-w: 143px; --entry-fs: 16px; --body-fs: 16px; --sec-title-fs: 19px; --sec-icon-fs: 16px; --proj-title-fs: 18px; --contact-fs: 17px; --contact-icon-fs: 15.5px; }
+html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5px; --body-fs: 14.5px; --sec-title-fs: 17px; --sec-icon-fs: 14px; --proj-title-fs: 16px; --contact-fs: 15px; --contact-icon-fs: 14px; }
+/* 三行（两条学历 + 一条工作经历）的日期列对齐。
+   教育条目 .entry-bar--plain 无内边距，内容区 0~796；
+   工作经历 .entry-bar 有 padding: 0 10px，内容区 10~786。
+   两者日期列宽同为 --date-w 且左对齐，但右端相差 10px，
+   故给工作经历日期列 -10px 负右外边距把它右移补齐。
+   -10px：右端 786+10=796，左端 796-146=650
+          与教育条目（650~796）完全重合。
+   ⚠️ 曾误用 -20px，实测截图工作经历日期偏右 15px（左端 53 vs 教育 38）。
+   调整本值时建议实测：教育日期左端 x 应等于工作经历日期左端 x。 */
+#sec-experience .entry-bar--enddate .eb-date { margin-right: -10px; }
+   工作经历 .entry-bar 有 padding: 0 10px，内容区 10~786。
+   两者日期列宽同为 --date-w，但右端相差 20px（796 vs 776），
+   故给工作经历的日期列一个 -20px 的负右外边距，把它右移到与教育相同的位置。
+   调好后三行日期左右端都对齐。 */
+#sec-experience .entry-bar--enddate .eb-date { margin-right: -20px; }
+/* 时间列：三行统一宽度，右端对齐 */
+.entry-bar--plain .eb-date,
+.entry-bar--enddate .eb-date { flex: 0 0 var(--date-w); text-align: left; }
 
 .entry-bar--plain {
   background: transparent;
@@ -279,7 +316,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 }
 .entry-bar--plain .eb-company {
   order: 1;
-  font-size: 13.5px;
+  font-size: var(--entry-fs);
   font-weight: 800;
   flex: 0 0 var(--edu-school-w);
 }
@@ -287,7 +324,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   order: 3;                    /* 专业 */
   flex: 0 0 var(--edu-major-w);
   /* 与学校统一：同字号、同字重、同颜色（#111 而非 --muted 的 #444） */
-  font-size: 13.5px;
+  font-size: var(--entry-fs);
   font-weight: 800;
   color: #111;
 }
@@ -295,13 +332,16 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   order: 5;                    /* 学历 */
   flex: 0 0 auto;
   /* 与学校统一：同字号、同字重、同颜色 */
-  font-size: 13.5px;
+  font-size: var(--entry-fs);
   font-weight: 800;
   color: #111;
 }
 .entry-bar--plain .eb-date {
   order: 6;
-  margin-left: auto;           /* 时间推到行尾右端 */
+  /* 13.5px：与学校/专业/学历及工作经历条目一致 */
+
+  font-size: var(--entry-fs);
+  margin-left: auto;           /* 与前三项同行，推到行尾右端 */
 }
 /* 学校后的 ─── 分隔符：教育条目不需要 */
 .entry-bar--plain .eb-sep--after-company { display: none; }
@@ -311,17 +351,17 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 .eb-company {
   font-weight: 800;
   /* 13.5px：公司全称较长（含「（快手科技）」），再大就会把日期挤到下一行 */
-  font-size: 13.5px;
+  font-size: var(--entry-fs);
   color: #111;
   white-space: nowrap;
 }
-.eb-sep { color: #999; font-weight: 300; font-size: 12px; }
+.eb-sep { color: #999; font-weight: 300; font-size: 13px; }
 /* 工作经历的角色（Java 工程师）与公司名统一：同字号、同字重、同颜色。
    颜色必须显式覆盖 —— .eb-role 全局是 var(--muted) = #444，
    而公司名是 #111；只加粗不改色，视觉上仍会觉得「发灰」。
    限定 .entry-bar--enddate（工作经历条目），不影响教育/其他区块。 */
 .entry-bar--enddate .eb-role {
-  font-size: 13.5px;
+  font-size: var(--entry-fs);
   font-weight: 800;
   color: #111;
 }
@@ -335,7 +375,8 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 .eb-date {
   color: var(--red);
   font-weight: 700;
-  font-size: 12.5px;
+  /* 14px：与其余内容同步放大（13.5 -> 14） */
+  font-size: var(--entry-fs);
   white-space: nowrap;
   /* 等宽数字，与奖项年份同一处理：Inter 默认比例数字，「1」偏窄会让日期参差 */
   font-variant-numeric: tabular-nums;
@@ -344,31 +385,34 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 .eb-role {
   color: var(--muted);
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 13.5px;
   white-space: nowrap;
 }
 .eb-dept2 {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
 }
 /* Right-aligned red link (last | segment) */
 .eb-link {
   margin-left: auto;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--red);
   white-space: nowrap;
 }
-.eb-link a { color: var(--red); font-size: 11.5px; font-weight: 600; }
+.eb-link a { color: var(--red); font-size: 12.5px; font-weight: 600; }
 .eb-link a:hover { text-decoration: underline; }
 
 /* ==============================================
    PROJECT TITLE (h4 → 深蓝加粗，左侧竖条强调)
    ============================================== */
+/* 项目标题（一、磁力青松 Agent …）
+   走 --proj-title-fs 变量。原先写死 0.98rem，而中文正文已放大到 16px，
+   会导致项目标题（约 15.7px）比正文还小、层次倒置。 */
 .proj-title {
   color: var(--blue-dark);
-  font-size: 0.98rem;
+  font-size: var(--proj-title-fs);
   font-weight: 800;
   margin: 14px 0 5px;
   display: flex;
@@ -396,7 +440,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   position: relative;
   padding-left: 1.1em;
   margin-bottom: 4px;
-  font-size: 13.5px;
+  font-size: var(--body-fs);
   line-height: 1.7;
 }
 .sec-body ul > li::before {
@@ -420,7 +464,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  font-size: var(--fs-body);
+  font-size: var(--body-fs);
   line-height: 1.6;
 }
 .sec-body--awards th,
@@ -462,6 +506,12 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
    不影响技能、教育、奖项等区块。 */
 #sec-experience .sec-body > ul > li::before { display: none; }
 #sec-experience .sec-body > ul > li { padding-left: 0; }
+/* 工作经历列表项两端对齐：中英混排换行点由内容决定，
+   每行长度不一导致右端参差（上一行末尾留空）。
+   justify 会拉伸行内空白（中文为字距）把非末行撑满，
+   末行与最后一行不拉伸，符合排版惯例。
+   注意：末行短是正常的，justify 不会也不该撑它。 */
+#sec-experience .sec-body li { text-align: justify; }
 /* Level 2 ○ */
 .sec-body ul ul {
   margin: 2px 0 2px 1em;
@@ -488,7 +538,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   padding-left: 1.5em;
   margin: 4px 0 6px;
 }
-.sec-body ol > li { margin-bottom: 3px; font-size: 13.5px; }
+.sec-body ol > li { margin-bottom: 3px; font-size: var(--body-fs); }
 
 /* ==============================================
    INLINE CODE
@@ -536,20 +586,20 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 6px;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 700;
 }
 .deerflow-card-title a { color: var(--blue); font-weight: 700; }
 .deerflow-card-title .dc-stars {
   color: var(--muted);
   font-weight: 400;
-  font-size: 12.5px;
+  font-size: 13.5px;
 }
 .deerflow-card-title .dc-badge {
   margin-left: auto;
   background: #1a7f37;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 2px 9px;
   border-radius: 12px;
@@ -576,7 +626,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   padding: 10px 14px;
   margin: 8px 0 12px;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: var(--body-fs);
   color: var(--text);
 }
 /* First paragraph = repo title line */
@@ -586,7 +636,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 7px;
-  font-size: 13.5px;
+  font-size: var(--body-fs);
   font-weight: 700;
 }
 .sec-body blockquote > p:first-child a { color: var(--blue); font-weight: 700; }
@@ -594,7 +644,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 .sec-body blockquote > p:first-child em {
   color: var(--muted);
   font-style: normal;
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 400;
 }
 /* #1 Repository badge — code tag */
@@ -602,7 +652,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   margin-left: auto;
   background: #1a7f37;
   color: #fff !important;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 2px 9px;
   border-radius: 12px;
@@ -610,7 +660,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   font-family: var(--font);
   white-space: nowrap;
 }
-.sec-body blockquote p { margin: 2px 0 5px; font-size: 13px; }
+.sec-body blockquote p { margin: 2px 0 5px; font-size: var(--body-fs); }
 .sec-body blockquote strong { font-weight: 700; color: var(--text); }
 .sec-body blockquote a { color: var(--blue); }
 /* blockquote bullets same as main ● ○ ■ */
@@ -619,7 +669,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
   position: relative;
   padding-left: 1.1em;
   margin-bottom: 2.5px;
-  font-size: 13px;
+  font-size: var(--body-fs);
 }
 .sec-body blockquote ul > li::before {
   content: '●';
@@ -640,7 +690,7 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 .loading-hint {
   color: #aaa;
   padding: 20px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* ==============================================
@@ -653,25 +703,19 @@ html[lang="en"] { --edu-school-w: 172px; --edu-major-w: 250px; }
 /* 奖项表格在窄屏：名称折行即可，不需要列切换逻辑（表格自然收窄） */
 @media (max-width: 880px) {
   .sec-body--awards td { padding-right: 8px; }
-  .sec-body--awards td:nth-child(2) { padding-right: 18px; }
+  .sec-body--awards td:nth-child(2) { padding-right: 14px; }
 }
 /* 窄屏：联系方式换行显示，不做特殊处理（flex-wrap 已自适应） */
 @media (max-width: 600px) {
   :root { --pad-h: 14px; --pad-v: 9px; --pad-v-top: 6px; }
   .rh-top { align-items: flex-start; }
   /* 窄屏联系方式会折行、文字块可能比头像高，改为顶对齐更稳妥（已在 .rh-top 设定） */
-  .rh-contact-row { font-size: 12.5px; column-gap: 14px; row-gap: 2px; }
+  .rh-contact-row { font-size: var(--contact-fs); column-gap: 14px; row-gap: 2px; }
   /* 手机端只改宽度，height 保持 auto，照片依旧不被裁切 */
   .rh-avatar { width: 84px; height: auto; border-radius: 0; }
   .rh-avatar-placeholder { width: 84px; height: 112px; font-size: 1.5rem; border-radius: 0; }
-  .rh-summary { font-size: 12px; line-height: 1.7; }
+  .rh-summary { font-size: var(--body-fs); line-height: 1.7; }
   .eb-link { margin-left: 0; width: 100%; }
-    /* 手机端取消教育条目的固定列宽：可用宽度不足以容纳固定列，
-       强行保留会溢出；此时让各字段按内容排布，时间单独换到下一行右端。 */
-    .entry-bar--plain { flex-wrap: wrap; }
-    .entry-bar--plain .eb-company,
-    .entry-bar--plain .eb-dept2 { flex: 0 1 auto; }
-    .entry-bar--plain .eb-date { flex-basis: 100%; margin-left: 0; order: 9; }
   .topbar { padding: 0 14px; }
   .topbar-name { max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
