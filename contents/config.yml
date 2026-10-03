@@ -22,8 +22,8 @@ age_en: "26 years old"
 
 # ── 姓名下方简介行（暂不使用，留空则整块不渲染）──
 # 需要时取消注释并改写内容即可；想换行可用 <br>
-# summary_zh: "大模型应用与 Agent 架构方向，广告商业化后端 + AI 工程经验。主导磁力青松 Agent Harness 架构升级（Workflow → 动态工具调度），新增业务能力研发周期缩短约 50%。"
-# summary_en: "Focus on LLM applications and Agent architecture, with backend and AI engineering experience in ads monetization. Led the Cili Qingsong Agent Harness migration (Workflow → dynamic tool dispatch), cutting the cycle to add new capabilities by ~50%."
+# summary_zh: "大模型应用与 Agent 架构方向，广告商业化后端 + AI 工程经验。主导创编 Agent（自然语言创编）、参与设计青松 AgentTask 长任务运行时，及智投Agent（投中辅助调控），Java 自研、无框架。"
+# summary_en: "Focus on LLM applications and Agent architecture, with backend and AI engineering experience in ads monetization. Led the Ad Creation Agent (natural-language ad creation), co-designed the Qingsong AgentTask runtime, and the Smart Delivery Agent (in-flight assisted optimization), self-built in Java with no framework."
 
 # ── Section 标题（中文）──────────────────
 section_education_zh: "教育背景"
