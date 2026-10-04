@@ -15,9 +15,9 @@
   --paper:     #ffffff;
   --page-max:  900px;
   --pad-h:     52px;
-  --pad-v:     20px;
+  --pad-v:     14px;
   /* 纸张顶部内边距单独控制（头像上方的留白就是它） */
-  --pad-v-top: 28px;
+  --pad-v-top: 18px;
   --topbar-h:  44px;
   --font:      'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
@@ -28,7 +28,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font);
   font-size: var(--body-fs);
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--text);
   background: var(--page-bg);
   padding-top: var(--topbar-h);
@@ -110,8 +110,8 @@ strong { font-weight: 700; }
    HEADER
    ============================================== */
 #resume-header {
-  margin-bottom: 18px;
-  padding-bottom: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #ddd;
 }
 
@@ -142,7 +142,7 @@ strong { font-weight: 700; }
   letter-spacing: -0.01em;
   color: var(--text);
   line-height: 1.15;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 /* 个人信息摘要 */
@@ -204,7 +204,7 @@ strong { font-weight: 700; }
 /* ==============================================
    SECTION
    ============================================== */
-.resume-section { margin-bottom: 18px; }
+.resume-section { margin-bottom: 10px; }
 
 /* 区块标题（教育背景 / 工作经历 / 专业技能 / 论文发表 & 荣誉奖项）
    字号走 --sec-title-fs 变量，按语言分别给值（中文可更大）。
@@ -214,8 +214,8 @@ strong { font-weight: 700; }
   font-weight: 800;
   color: var(--red);
   border-bottom: 1.5px solid var(--red);
-  padding-bottom: 3px;
-  margin-bottom: 9px;
+  padding-bottom: 2px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -227,15 +227,15 @@ strong { font-weight: 700; }
    ============================================== */
 .sec-body { color: var(--text); }
 
-.sec-body p { margin: 3px 0 7px; font-size: var(--body-fs); line-height: 1.7; }
+.sec-body p { margin: 2px 0 4px; font-size: var(--body-fs); line-height: 1.5; }
 
 /* ==============================================
    ENTRY BAR (h3 → gray row)
    ============================================== */
 .entry-bar {
   background: var(--entry-bg);
-  padding: 5px 10px 5px 10px;
-  margin: 13px 0 6px;
+  padding: 4px 10px 4px 10px;
+  margin: 8px 0 4px;
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
@@ -244,7 +244,7 @@ strong { font-weight: 700; }
      列间距需压到 5px 才能不换行。 */
   gap: 3px 5px;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* 无底色版（教育背景用）——去掉灰底、内边距与分隔线，纯文字排版。
@@ -407,7 +407,7 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
   color: var(--blue-dark);
   font-size: var(--proj-title-fs);
   font-weight: 800;
-  margin: 14px 0 5px;
+  margin: 8px 0 4px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -439,15 +439,15 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
 .sec-body ul {
   list-style: none;
   padding: 0;
-  margin: 4px 0 6px;
+  margin: 2px 0 4px;
 }
 /* Level 1 ● */
 .sec-body ul > li {
   position: relative;
   padding-left: 1.1em;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   font-size: var(--body-fs);
-  line-height: 1.7;
+  line-height: 1.5;
 }
 .sec-body ul > li::before {
   content: '●';
@@ -520,7 +520,7 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
 #sec-experience .sec-body li { text-align: justify; }
 /* Level 2 ○ */
 .sec-body ul ul {
-  margin: 2px 0 2px 1em;
+  margin: 1px 0 1px 1em;
 }
 .sec-body ul ul > li::before {
   content: '○';
