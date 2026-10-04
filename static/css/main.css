@@ -416,6 +416,19 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
   letter-spacing: -0.005em;
   border-left: 3px solid var(--blue-dark);
   padding-left: 9px;
+  /* 与 .entry-bar 的右内边距保持一致，使两者的日期列右缘落在同一竖线上 */
+  padding-right: 10px;
+}
+.proj-title .proj-name { white-space: nowrap; }
+/* 项目标题行的时间：与工作经历/教育条目的日期同样式（红色、tabular-nums），
+   用与 .entry-bar--enddate 相同的方式右端对齐（固定列宽 + margin-left:auto）。 */
+.proj-title .eb-date {
+  margin-left: auto;
+  flex: 0 0 var(--date-w);
+  text-align: left;
+  /* -9px：补上 .proj-title（border-left + padding）与 .entry-bar 的盒模型差异，
+     使日期左端与教育/工作条目的日期落在同一竖线（实测对齐值）。 */
+  margin-right: -9px;
 }
 .proj-title a { color: var(--blue-dark); }
 .proj-title a:hover { text-decoration: underline; }

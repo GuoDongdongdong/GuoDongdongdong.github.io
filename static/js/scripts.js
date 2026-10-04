@@ -91,7 +91,18 @@ function postProcess(container, key) {
   container.querySelectorAll('h4').forEach(h4 => {
     const div = document.createElement('div');
     div.className = 'proj-title';
-    div.innerHTML = h4.innerHTML;
+    const html    = h4.innerHTML;
+    const dashIdx = html.indexOf('---');
+    if (dashIdx === -1) {
+      div.innerHTML = html;
+    } else {
+      // 「项目名 --- 日期」：把日期拆出来单独渲染为 .eb-date，
+      // 复用工作经历/教育条目的日期样式（红色、等宽数字）并右端对齐。
+      const name = html.slice(0, dashIdx).trim();
+      const date = html.slice(dashIdx + 3).trim();
+      div.innerHTML = `<span class="proj-name">${name}</span>`
+        + `<span class="eb-date">${date}</span>`;
+    }
     h4.replaceWith(div);
   });
 }
