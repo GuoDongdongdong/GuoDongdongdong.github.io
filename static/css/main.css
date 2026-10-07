@@ -730,7 +730,10 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
    PRINT / 导出 PDF
    ============================================== */
 @media print {
-  @page { size: A4; margin: 12mm 12mm; }
+  /* 纸张上边距 = 纸沿到内容第一条线的距离，也就是 PDF 顶部那块留白。
+     屏幕上同一块留白 = .resume-wrap 的 margin-top(12px) + padding-top(--pad-v-top 18px) ≈ 8mm，
+     因此打印取 8mm 上边距（左右仍 12mm，下方 10mm），让 PDF 与页面视图对齐。 */
+  @page { size: A4; margin: 8mm 12mm 10mm; }
 
   html, body {
     background: #fff !important;
@@ -738,6 +741,10 @@ html[lang="en"] { --edu-school-w: 168px; --edu-major-w: 242px; --entry-fs: 13.5p
   }
   /* 顶栏只在屏幕上出现 */
   .topbar { display: none !important; }
+  /* ⚠️ body 的 padding-top 是给屏幕上那条固定顶栏留位的（--topbar-h = 44px）。
+     打印时顶栏虽被隐藏，这 44px 仍会把整份内容往下推，是 PDF 顶部多出一大块
+     留白的主因（叠加 @page 上边距后约 23mm），必须一起清零。 */
+  body { padding-top: 0 !important; }
 
   .resume-wrap {
     max-width: none;

@@ -29,16 +29,16 @@ age_en: "26 years old"
 section_education_zh: "教育背景"
 section_experience_zh: "工作经历"
 section_skills_zh: "专业技能"
-section_awards_zh: "论文发表 & 荣誉奖项"
+section_awards_zh: "个人绩效 & 论文发表 & 荣誉奖项"
 
 # ── Section 标题（英文）──────────────────
 section_education_en: "Education"
 section_experience_en: "Work Experience"
 section_skills_en: "Skills"
-section_awards_en: "Publications & Awards"
+section_awards_en: "Performance, Publications & Awards"
 
 # ── Section 顺序 ──────────────────────────
-# projects 已并入 experience，故不再单独成节
+# projects 已并入 experience；performance 已并入 awards，故均不再单独成节
 sections:
   - education
   - experience

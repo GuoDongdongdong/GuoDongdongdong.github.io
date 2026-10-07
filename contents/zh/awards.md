@@ -1,3 +1,9 @@
+**个人绩效**
+
+2025年终绩效： <span style="color:#c0392b;font-weight:700">A</span>
+
+2026年中绩效： <span style="color:#c0392b;font-weight:700">B+</span>
+
 **论文发表**
 
 - *MPformer: A Transformer-based Model for Earthen Ruins Climate Prediction* SCI 一区期刊 | 第一作者
